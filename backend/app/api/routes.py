@@ -30,8 +30,13 @@ router = APIRouter(prefix="/api")
 # Pydantic models
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# Pydantic models
+# ---------------------------------------------------------------------------
+
 class TurnRequest(BaseModel):
     message: str
+    user_profile: dict[str, Any] | None = None
 
 
 class ProductLoadRequest(BaseModel):
@@ -43,19 +48,36 @@ class ProductLoadRequest(BaseModel):
 # ---------------------------------------------------------------------------
 
 def _serialize_product(p) -> dict:
+    if hasattr(p, "to_dict"):
+        return p.to_dict()
     return {
-        "asin": p.asin,
-        "title": p.title,
-        "category": p.category,
-        "price": p.price,
-        "features": p.features,
-        "description": p.description,
+        "asin": getattr(p, "asin", "UNKNOWN"),
+        "parent_asin": getattr(p, "parent_asin", getattr(p, "asin", "UNKNOWN")),
+        "title": getattr(p, "title", "Untitled Product"),
+        "category": getattr(p, "category", ""),
+        "price": getattr(p, "price", None),
+        "features": getattr(p, "features", []),
+        "description": getattr(p, "description", []),
+        "average_rating": getattr(p, "average_rating", 4.5),
+        "rating_number": getattr(p, "rating_number", 100),
+        "store": getattr(p, "store", "Store"),
+        "details": getattr(p, "details", {}),
     }
 
 
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
+
+@router.get("/products")
+async def get_all_products():
+    """Return all products currently indexed in the catalog."""
+    from app.core.retriever import get_index
+    idx = get_index()
+    if not idx.is_ready() or not idx.products:
+        return {"products": []}
+    return {"products": [_serialize_product(p) for p in idx.products]}
+
 
 @router.post("/sessions", status_code=201)
 async def create_session():
@@ -71,7 +93,7 @@ async def process_turn(session_id: str, body: TurnRequest):
     Process one conversational turn:
     1. Persist user message
     2. Update state machine slots via LLM
-    3. Retrieve candidates
+    3. Retrieve candidates using dense RAG vectors + user profile embeddings
     4. Compute entropy → clarify or rerank
     5. Persist agent response + state snapshot
     6. Return response
@@ -84,6 +106,11 @@ async def process_turn(session_id: str, body: TurnRequest):
         raise HTTPException(status_code=404, detail="Session not found")
 
     turn_number = session.turnCount + 1
+
+    # --- Extract user profile interests ---
+    user_interests: list[str] = []
+    if body.user_profile and isinstance(body.user_profile.get("interests"), list):
+        user_interests = [str(x) for x in body.user_profile["interests"] if str(x).strip()]
 
     # --- Persist user message ---
     await db.message.create(
@@ -122,42 +149,28 @@ async def process_turn(session_id: str, body: TurnRequest):
     else:
         current_state = ConversationState()
 
+    # Merge user interests into soft preferences if not already present
+    for interest in user_interests:
+        if interest not in current_state.soft_preferences:
+            current_state.soft_preferences.append(interest)
+
     # --- Classify intent (rule-based fast path) ---
     intent_track = classify_intent(body.message, current_state.intent_track)
     current_state.intent_track = intent_track
 
-    # --- Update slots via LLM state machine ---
-    updated_state = await update_state(current_state, body.message, history)
-
-    # --- Build retrieval query ---
-    query = build_query(updated_state)
-
-    # --- Retrieve candidates ---
-    candidates = retrieve(
-        query=query,
-        intent_track=updated_state.intent_track,
-        hard_filters=updated_state.hard_filters,
-        negative_filters=updated_state.negative_filters,
-        top_k=150,
+    # --- Execute LangChain RAG Pipeline ---
+    from app.core.rag_pipeline import process_rag_turn
+    rag_result = process_rag_turn(
+        user_query=body.message,
+        user_profile=body.user_profile,
+        history=history,
+        top_k=8,
     )
 
-    # --- Entropy check ---
-    entropy_result = compute_entropy(candidates, turn_number)
-
-    # --- Prepare response ---
-    if entropy_result.should_clarify:
-        agent_message = entropy_result.clarification_question or "Could you give me more details?"
-        products_out: list[dict] = []
-    else:
-        # Rerank top 30, return top 10
-        top30 = candidates[:30]
-        top10 = rerank(query, top30, top_k=10)
-        products_out = [_serialize_product(p) for p in top10]
-        agent_message = (
-            f"Here are my top {len(products_out)} recommendations for you!"
-            if products_out
-            else "I couldn't find any products matching your criteria. Could you broaden your search?"
-        )
+    agent_message = rag_result["agentMessage"]
+    products_out = rag_result["products"]
+    should_clarify = rag_result.get("shouldClarify", False)
+    candidate_count = rag_result.get("candidateCount", len(products_out))
 
     # --- Persist agent message ---
     await db.message.create(
@@ -166,20 +179,6 @@ async def process_turn(session_id: str, body: TurnRequest):
             "sender": "AGENT",
             "content": agent_message,
             "turnNumber": turn_number,
-        }
-    )
-
-    # --- Persist state snapshot ---
-    await db.statesnapshot.create(
-        data={
-            "sessionId": session_id,
-            "turnNumber": turn_number,
-            "intentTrack": updated_state.intent_track,
-            "hardFilters": json.dumps(updated_state.hard_filters),
-            "negativeFilters": json.dumps(updated_state.negative_filters),
-            "softPreferences": json.dumps(updated_state.soft_preferences),
-            "candidateCount": len(candidates),
-            "entropyScore": entropy_result.entropy_score,
         }
     )
 
@@ -193,13 +192,11 @@ async def process_turn(session_id: str, body: TurnRequest):
         "sessionId": session_id,
         "turnNumber": turn_number,
         "agentMessage": agent_message,
-        "shouldClarify": entropy_result.should_clarify,
-        "clarificationAttr": entropy_result.clarification_attr,
-        "entropyScore": entropy_result.entropy_score,
-        "candidateCount": len(candidates),
+        "shouldClarify": should_clarify,
+        "candidateCount": candidate_count,
         "products": products_out,
-        "state": updated_state.to_dict(),
     }
+
 
 
 @router.get("/sessions/{session_id}/state")

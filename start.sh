@@ -53,8 +53,14 @@ log "Setting up backend…"
 cd "$BACKEND_DIR"
 
 if [ ! -d ".venv" ]; then
-  log "Creating Python virtual environment using uv…"
-  uv venv
+  log "Creating Python virtual environment (Python 3.12) using uv…"
+  uv venv --python 3.12
+else
+  if ! "$BACKEND_DIR/.venv/bin/python" --version 2>&1 | grep -q "3.12"; then
+    log "Existing virtual environment is not Python 3.12. Recreating with Python 3.12…"
+    rm -rf .venv
+    uv venv --python 3.12
+  fi
 fi
 
 # Activate venv

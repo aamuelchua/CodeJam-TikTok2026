@@ -8,8 +8,9 @@
   }
 
   body {
-    @apply bg-gray-950 text-gray-100 font-sans antialiased;
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-200;
     margin: 0;
+    padding: 0;
   }
 
   ::-webkit-scrollbar {
@@ -18,87 +19,95 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-900;
+    @apply bg-transparent;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-700 rounded-full;
+    @apply bg-slate-300 dark:bg-slate-700 rounded-full;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-500;
+    @apply bg-slate-400 dark:bg-slate-600;
   }
 }
 
 @layer components {
+  /* Glassmorphism panel styling */
   .panel {
-    @apply bg-gray-900 border border-gray-800 rounded-2xl flex flex-col overflow-hidden;
+    @apply bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl flex flex-col overflow-hidden backdrop-blur-md shadow-sm dark:shadow-2xl transition-all;
   }
 
   .panel-header {
-    @apply px-4 py-3 border-b border-gray-800 flex items-center gap-2 flex-shrink-0;
+    @apply px-5 py-3.5 border-b border-slate-200 dark:border-slate-800/80 flex items-center gap-2.5 flex-shrink-0 bg-slate-50/80 dark:bg-slate-900/50;
   }
 
   .panel-title {
-    @apply text-sm font-semibold text-gray-300 uppercase tracking-wider;
+    @apply text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider;
   }
 
   .badge {
-    @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium;
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-tight;
   }
 
   .badge-buying {
-    @apply bg-emerald-900/60 text-emerald-300 border border-emerald-700/50;
+    @apply bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300/50 dark:border-emerald-700/50;
   }
 
   .badge-browsing {
-    @apply bg-violet-900/60 text-violet-300 border border-violet-700/50;
+    @apply bg-violet-100 dark:bg-violet-950/80 text-violet-700 dark:text-violet-300 border border-violet-300/50 dark:border-violet-700/50;
   }
 
   .badge-entropy {
-    @apply bg-amber-900/60 text-amber-300 border border-amber-700/50;
+    @apply bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300/50 dark:border-amber-700/50;
   }
 
   .chip {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium;
+    @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium transition-all;
   }
 
   .chip-hard {
-    @apply bg-sky-900/50 text-sky-300 border border-sky-700/40;
+    @apply bg-sky-100 dark:bg-sky-950/60 text-sky-800 dark:text-sky-300 border border-sky-300/60 dark:border-sky-800/50;
   }
 
   .chip-neg {
-    @apply bg-rose-900/50 text-rose-300 border border-rose-700/40;
+    @apply bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300/60 dark:border-rose-800/50;
   }
 
   .chip-soft {
-    @apply bg-teal-900/50 text-teal-300 border border-teal-700/40;
+    @apply bg-teal-100 dark:bg-teal-950/60 text-teal-800 dark:text-teal-300 border border-teal-300/60 dark:border-teal-800/50;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2 rounded-xl
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
            bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold
-           transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500/50
-           disabled:opacity-40 disabled:cursor-not-allowed;
+           shadow-sm hover:shadow-md transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-brand-500/50
+           disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
+           bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700
+           text-slate-800 dark:text-slate-200 text-sm font-medium
+           border border-slate-300/70 dark:border-slate-700/70 transition-all duration-150 active:scale-[0.98];
   }
 
   .input-field {
-    @apply w-full bg-gray-800 border border-gray-700 rounded-xl px-4 py-2.5
-           text-sm text-gray-100 placeholder-gray-500 outline-none
-           focus:border-brand-500 focus:ring-1 focus:ring-brand-500/30
-           transition-colors duration-150;
+    @apply w-full bg-slate-100 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl px-4 py-2.5
+           text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none
+           focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
+           transition-all duration-150;
   }
 
   .product-card {
-    @apply bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col gap-2
-           hover:border-brand-600/60 hover:shadow-lg hover:shadow-brand-900/20
+    @apply bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 flex flex-col gap-3
+           hover:border-brand-500/60 hover:shadow-lg
            transition-all duration-200 cursor-pointer;
   }
 }
 
-/* Animated gradient text */
+/* Gradient heading text */
 .gradient-text {
-  background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+  background: linear-gradient(135deg, #0284c7, #6366f1, #a855f7);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -117,7 +126,7 @@
 .typing-dot:nth-child(2) { animation-delay: 0.2s; }
 .typing-dot:nth-child(3) { animation-delay: 0.4s; }
 
-/* Fade-in animation */
+/* Fade animation */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -129,8 +138,8 @@
 
 /* Entropy pulse */
 @keyframes entropPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.3); }
-  50%       { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.3); }
+  50%       { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
 }
 
 .entropy-pulse {
