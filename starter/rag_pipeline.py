@@ -208,10 +208,10 @@ class RAGPipeline:
             rows = self.connection.execute("SELECT parent_asin FROM products LIMIT ?", (top_k,)).fetchall()
         else:
             pos_expression = " OR ".join(f'"{t}"' for t in tokens)
-            # Optimal balanced column weights
+            # Optimal balanced column weights with boosted features
             rows = self.connection.execute(
                 "SELECT parent_asin FROM products WHERE products MATCH ? "
-                "ORDER BY bm25(products, 0.0, 12.0, 12.0, 6.0, 2.0, 1.0, 1.0) LIMIT ?",
+                "ORDER BY bm25(products, 0.0, 12.0, 12.0, 9.0, 2.0, 1.0, 1.0) LIMIT ?",
                 (pos_expression, top_k),
             ).fetchall()
 

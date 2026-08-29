@@ -341,6 +341,7 @@ def get_embedding_model():
     global _embedding_model_singleton
     if _embedding_model_singleton is None:
         try:
+            from sentence_transformers import SentenceTransformer
             _embedding_model_singleton = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
         except Exception:
             _embedding_model_singleton = None
