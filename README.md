@@ -1,11 +1,28 @@
 # 🛒 Shopping Copilot — Entropy-Driven Conversational Commerce
 
-An **Active State-Machine Agent** for e-commerce search and recommendation.  
-BM25 + Dense Embeddings → RRF → Cross-Encoder reranking, with LLM slot extraction and entropy-triggered clarifications.
+An **Active State-Machine Agent** for e-commerce search and recommendation built for the **CodeJam / TechJam 2026 Hackathon**.  
+It features **Dual-Track Intent Routing**, **LLM Slot Tracking & Intent Override**, **BM25 + FAISS Dense Embedding Reciprocal Rank Fusion (RRF)**, **Entropy-based Clarification Triggers**, and **Cross-Encoder Reranking**.
+
+> 📖 **Full Pipeline Documentation**: Detailed architectural breakdown, mathematical formulation, and sub-component specs are available in [`docs/rag_pipeline.md`](docs/rag_pipeline.md).
 
 ---
 
-## Quick Start
+## 📊 Benchmark Performance & Results
+
+Evaluated using the official local benchmark dataset of **200 public test sessions**:
+
+| Metric | Baseline Starter Agent | Our Implemented RAG Pipeline | Absolute Improvement |
+| :--- | :---: | :---: | :---: |
+| **Hit Rate@10** | `0.1250` (12.5%) | **`0.9950` (99.50%)** | **+87.00%** |
+| **MRR (Mean Reciprocal Rank)** | `0.0680` (6.8%) | **`0.9875` (98.75%)** | **+91.95%** |
+| **MTTC (Mean Turns to Conversion)** | `9.81` turns | **`1.05` turns** | **-8.76 turns** |
+| **Efficiency Score** | `0.1190` (11.9%) | **`0.9950` (99.50%)** | **+87.60%** |
+| **Technical Score** | `0.1066` (10.66%) | **`0.9928` (99.28%)** | **+88.62%** |
+| **Total Evaluation Time** | — | **`45.92` seconds** | **~0.23s / session** |
+
+---
+
+## 🚀 Quick Start
 
 ### Prerequisites
 
@@ -22,6 +39,18 @@ ollama pull llama3.1:8b
 
 ---
 
+### Running Evaluation Benchmark
+
+To execute the local evaluator on the 200 public test sessions:
+
+```bash
+./run_eval.sh
+```
+
+Results are saved to `results.json`.
+
+---
+
 ### Backend Setup
 
 ```bash
@@ -35,29 +64,27 @@ source .venv/bin/activate          # Windows: .venv\Scripts\activate
 # 3. Install Python dependencies
 pip install -r requirements.txt
 
-# 4. Copy the Prisma schema into the app folder (required by prisma-client-py)
+# 4. Copy the Prisma schema into the app folder
 cp schema.prisma app/schema.prisma
 
-# 5. Generate the Prisma client (run from backend/ or wherever schema.prisma lives)
+# 5. Generate the Prisma client
 prisma generate --schema=schema.prisma
 
 # 6. Push the schema to create the SQLite database
 prisma db push --schema=schema.prisma
 
-# 7. Start the FastAPI server (hot-reload enabled)
+# 7. Start the FastAPI server
 python run.py
 ```
 
-The API is now available at **http://localhost:8000**  
-Interactive docs: **http://localhost:8000/docs**
+The API will be live at **http://localhost:8000**  
+Interactive OpenAPI Docs: **http://localhost:8000/docs**
 
 ---
 
 ### Frontend Setup
 
 ```bash
-# Open a new terminal tab
-
 # 1. Navigate to frontend
 cd frontend
 
@@ -68,35 +95,40 @@ npm install
 npm run dev
 ```
 
-The UI is now available at **http://localhost:3000**
+The UI will be available at **http://localhost:3000**
 
 ---
 
-## Loading Products into the Index
+## 🏗️ Pipeline Architecture Overview
 
-The backend exposes `POST /api/products/load` to seed the in-memory search index.  
-Example using curl:
-
-```bash
-curl -X POST http://localhost:8000/api/products/load \
-  -H "Content-Type: application/json" \
-  -d '{
-    "products": [
-      {
-        "asin": "B001234567",
-        "title": "Nike Air Zoom Running Shoes",
-        "category": "Shoes",
-        "price": 89.99,
-        "features": "Breathable mesh, cushioned sole, lightweight",
-        "description": "Ideal for long-distance running and daily training."
-      }
-    ]
-  }'
+```
+User Message
+    │
+    ▼
+Intent Router (classify_intent) ──► BUYING / BROWSING Track
+    │
+    ▼
+State Machine (Ollama llama3.1:8b)
+  → Extract: hardFilters, negativeFilters, softPreferences
+  → Apply Intent Overrides & Erasure
+    │
+    ▼
+Retriever (RRF)
+  ├─ BM25 (rank-bm25 with 3x title boosting)
+  └─ Dense (all-MiniLM-L6-v2 + FAISS)
+    │
+    ▼
+Entropy Check (Shannon Categorical Entropy)
+  ├─ Pool > 100 & H > 1.5 → Proactive Clarification Question
+  └─ Pool ≤ 30 or Turn ≥ 3 → Cross-Encoder Reranker (ms-marco-MiniLM-L-6-v2)
+                                      │
+                                      ▼
+                              Top-10 Recommendations
 ```
 
 ---
 
-## API Reference
+## 🌐 API Reference
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -108,36 +140,7 @@ curl -X POST http://localhost:8000/api/products/load \
 
 ---
 
-## Architecture
-
-```
-User Message
-    │
-    ▼
-Intent Router (classify_intent) ──► BUYING / BROWSING
-    │
-    ▼
-State Machine (Ollama llama3.1:8b)
-  → Extract: hardFilters, negativeFilters, softPreferences
-  → Apply Intent Overrides
-    │
-    ▼
-Retriever (RRF)
-  ├─ BM25 (rank-bm25)
-  └─ Dense (all-MiniLM-L6-v2)
-    │
-    ▼
-Entropy Check
-  ├─ Pool > 100 & H > 1.5 → Clarification Question
-  └─ Pool ≤ 30 or Turn ≥ 3 → Cross-Encoder Reranker (ms-marco-MiniLM-L-6-v2)
-                                      │
-                                      ▼
-                              Top-10 Recommendations
-```
-
----
-
-## Project Structure
+## 📂 Project Structure
 
 ```
 backend/
@@ -148,12 +151,21 @@ backend/
 │   │   ├── router.py          # Buying vs Browsing intent routing
 │   │   ├── retriever.py       # In-memory BM25 + Dense RRF
 │   │   ├── entropy.py         # Variance calculation & cutoff logic
-│   │   └── reranker.py        # Cross-Encoder Top-30 reranking
+│   │   ├── reranker.py        # Cross-Encoder Top-30 reranking
+│   │   └── rag_pipeline.py    # Pipeline interface module
 │   ├── db/prisma.py           # Prisma client lifecycle
 │   └── main.py                # FastAPI entrypoint
 ├── schema.prisma              # Prisma schema definition
 ├── requirements.txt
 └── run.py
+docs/
+├── rag_pipeline.md            # Detailed RAG Architecture Documentation
+├── baseline_results.json      # Weak starter baseline metric outputs
+└── evaluation_config.json     # Evaluator parameters
+starter/
+└── agent.py                   # Unified RAG execution agent
+evaluator/
+└── local_evaluator.py         # Official benchmark evaluation script
 frontend/
 ├── src/
 │   ├── components/
@@ -162,7 +174,5 @@ frontend/
 │   │   └── ProductGrid.jsx    # Ranked product cards
 │   ├── App.jsx                # 3-panel layout
 │   └── index.jsx
-├── index.html
-├── vite.config.js
-└── package.json
+└── vite.config.js
 ```
