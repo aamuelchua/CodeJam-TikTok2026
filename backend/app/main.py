@@ -1,6 +1,11 @@
-"""
-FastAPI application entry-point.
-"""
+import os
+import sys
+
+# Ensure project root is in sys.path so starter.agent is importable
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -8,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import router
 from app.db import prisma as prisma_db
+
 
 
 @asynccontextmanager

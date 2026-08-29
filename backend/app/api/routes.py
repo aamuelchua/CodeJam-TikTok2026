@@ -7,7 +7,13 @@ Endpoints:
   GET  /api/sessions/{session_id}/state      – Return current slots & intent track
   POST /api/products/load                    – Load products into the in-memory index
 """
-from __future__ import annotations
+import os
+import sys
+
+# Ensure project root is in sys.path so starter.agent is importable
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+if ROOT_DIR not in sys.path:
+    sys.path.insert(0, ROOT_DIR)
 
 import json
 import uuid
@@ -22,6 +28,7 @@ from app.core.retriever import retrieve, load_products
 from app.core.router import classify_intent
 from app.core.state_machine import ConversationState, update_state, build_query
 from app.db.prisma import get_client
+
 
 router = APIRouter(prefix="/api")
 
