@@ -297,7 +297,8 @@ class Agent:
     and Llama 3.1 8B LLM response generation.
     """
 
-    def __init__(self):
+    def __init__(self, catalog_path: str = "data/catalog.jsonl"):
+        self.catalog_path = catalog_path
         self.sessions: dict[str, dict[str, Any]] = {}
         # Warmup catalog, BM25 & vector index singletons
         try:
