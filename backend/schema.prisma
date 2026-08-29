@@ -52,3 +52,25 @@ model Product {
   description   String?
   denseVectorId Int?
 }
+
+model User {
+  id                String   @id @default(uuid())
+  email             String   @unique
+  name              String
+  selectedInterests String   @default("[]") // JSON array string
+  derivedInterests  String   @default("[]") // JSON array string
+  cart              String?  @default("[]") // JSON array string
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  orders            Order[]
+}
+
+model Order {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalAmount Float
+  items       String   // JSON string of purchased items
+  createdAt   DateTime @default(now())
+}
+

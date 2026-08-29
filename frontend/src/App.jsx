@@ -7,9 +7,10 @@ import ChatPlayground from './components/ChatPlayground.jsx'
 import ProfileTab from './components/ProfileTab.jsx'
 import StateInspector from './components/StateInspector.jsx'
 import CartDrawer from './components/CartDrawer.jsx'
-import OnboardingModal from './components/OnboardingModal.jsx'
+import OnboardingWizard from './components/OnboardingWizard.jsx'
 import FloatingCopilotWidget from './components/FloatingCopilotWidget.jsx'
 import PinnedCopilotSidebar from './components/PinnedCopilotSidebar.jsx'
+import AdminPortal from './components/AdminPortal.jsx'
 import {
   ShoppingBag,
   Sun,
@@ -18,6 +19,7 @@ import {
   Sparkles,
   Pin,
   PinOff,
+  ShieldCheck,
 } from 'lucide-react'
 
 const API = '/api'
@@ -37,13 +39,14 @@ function MainContent() {
   const [activeTab, setActiveTab] = useState('shop')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
-  // Floating Chatbot Open/Close state
+  // Floating & Pinned Copilot State
   const [isCopilotOpen, setIsCopilotOpen] = useState(false)
-
-  // Pinned Companion State (Side-by-Side Flex Layout)
   const [isCopilotPinned, setIsCopilotPinned] = useState(() => {
     return localStorage.getItem('shopping_copilot_pinned') === 'true'
   })
+
+  // Admin Portal Modal Visibility
+  const [isAdminOpen, setIsAdminOpen] = useState(false)
 
   // Cart State with LocalStorage Caching
   const [cartItems, setCartItems] = useState(() => {
@@ -65,13 +68,13 @@ function MainContent() {
     }
   })
 
-  // Onboarding Modal Visibility
+  // Onboarding Wizard Visibility
   const [isOnboardingOpen, setIsOnboardingOpen] = useState(!userProfile?.onboarded)
 
   // Cart Drawer Visibility
   const [isCartOpen, setIsCartOpen] = useState(false)
 
-  // Product Catalog State with Caching
+  // Product Catalog State
   const [products, setProducts] = useState([])
 
   // Session & Copilot Chat State
@@ -138,7 +141,7 @@ function MainContent() {
     setCartItems([])
   }, [])
 
-  // Profile Operations
+  // User Profile Operations
   const handleCompleteOnboarding = useCallback((profile) => {
     setUserProfile(profile)
     setIsOnboardingOpen(false)
@@ -147,6 +150,13 @@ function MainContent() {
   const handleUpdateProfile = useCallback((profile) => {
     setUserProfile(profile)
     localStorage.setItem('shopping_copilot_profile', JSON.stringify(profile))
+    if (profile.email) {
+      axios.put(`${API}/users/${profile.email}`, {
+        name: profile.name,
+        selected_interests: profile.selectedInterests || profile.interests,
+        derived_interests: profile.derivedInterests,
+      }).catch(() => {})
+    }
   }, [])
 
   const handleResetProfile = useCallback(() => {
@@ -172,7 +182,7 @@ function MainContent() {
     setIsCopilotOpen(true)
   }
 
-  // Turn Results from Copilot Chat
+  // Session & Copilot Turn Handler
   const handleSessionCreated = useCallback((id) => {
     setSessionId(id)
     setSessionState(null)
@@ -187,7 +197,21 @@ function MainContent() {
         return [...newProducts, ...prev]
       })
     }
-  }, [])
+
+    // Capture derived interests from RAG response
+    if (result.derivedInterests && result.derivedInterests.length > 0 && userProfile) {
+      setUserProfile((prev) => {
+        if (!prev) return prev
+        const updatedDerived = Array.from(new Set([...(prev.derivedInterests || []), ...result.derivedInterests]))
+        const updatedProfile = { ...prev, derivedInterests: updatedDerived }
+        localStorage.setItem('shopping_copilot_profile', JSON.stringify(updatedProfile))
+        if (prev.email) {
+          axios.put(`${API}/users/${prev.email}`, { derived_interests: updatedDerived }).catch(() => {})
+        }
+        return updatedProfile
+      })
+    }
+  }, [userProfile])
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0)
 
@@ -243,6 +267,16 @@ function MainContent() {
         {/* Right Header Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           
+          {/* Admin Portal Button */}
+          <button
+            onClick={() => setIsAdminOpen(true)}
+            className="p-2.5 rounded-2xl bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border border-purple-200 dark:border-purple-800 hover:bg-purple-100 dark:hover:bg-purple-900/60 transition-colors flex items-center gap-1.5 text-xs font-bold"
+            title="Open Admin Portal"
+          >
+            <ShieldCheck className="w-4 h-4 text-amber-400" />
+            <span className="hidden sm:inline">Admin Portal</span>
+          </button>
+
           {/* Pin Companion Toggle Shortcut */}
           <button
             onClick={() => (isCopilotPinned ? handleUnpinCopilot() : handlePinCopilot())}
@@ -383,7 +417,7 @@ function MainContent() {
       </div>
 
       {/* ── Modals & Drawers ── */}
-      <OnboardingModal
+      <OnboardingWizard
         isOpen={isOnboardingOpen}
         onComplete={handleCompleteOnboarding}
       />
@@ -396,6 +430,10 @@ function MainContent() {
         onRemoveItem={handleRemoveItem}
         onClearCart={handleClearCart}
       />
+
+      {isAdminOpen && (
+        <AdminPortal onClose={() => setIsAdminOpen(false)} />
+      )}
     </div>
   )
 }

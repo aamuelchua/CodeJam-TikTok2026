@@ -9,6 +9,9 @@ import {
   CheckCircle2,
   Trash2,
   Cpu,
+  GitMerge,
+  Plus,
+  X,
 } from 'lucide-react'
 
 const ALL_TAGS = [
@@ -31,13 +34,23 @@ const ALL_TAGS = [
 export default function ProfileTab({ userProfile, onUpdateProfile, onResetProfile }) {
   const [name, setName] = useState(userProfile?.name || 'Shopper')
   const [email, setEmail] = useState(userProfile?.email || 'shopper@example.com')
-  const [selectedTags, setSelectedTags] = useState(userProfile?.interests || ["Women's Shoes", "House Slippers", "Electronics"])
+  const [selectedTags, setSelectedTags] = useState(userProfile?.interests || userProfile?.selectedInterests || ["Women's Shoes", "House Slippers", "Electronics"])
+  const [derivedTags, setDerivedTags] = useState(userProfile?.derivedInterests || ["Memory Foam Insoles", "Active Noise Cancellation"])
   const [savedSuccess, setSavedSuccess] = useState(false)
+  const [mergedSuccess, setMergedSuccess] = useState(false)
 
   const toggleTag = (tag) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     )
+  }
+
+  // Merge AI-derived interests into explicit selected preferences
+  const handleMergeDerived = () => {
+    const combined = Array.from(new Set([...selectedTags, ...derivedTags]))
+    setSelectedTags(combined)
+    setMergedSuccess(true)
+    setTimeout(() => setMergedSuccess(false), 2500)
   }
 
   const handleSave = (e) => {
@@ -46,7 +59,9 @@ export default function ProfileTab({ userProfile, onUpdateProfile, onResetProfil
       ...userProfile,
       name: name.trim() || 'Shopper',
       email: email.trim() || 'shopper@example.com',
+      selectedInterests: selectedTags,
       interests: selectedTags,
+      derivedInterests: derivedTags,
       updatedAt: new Date().toISOString(),
     }
     onUpdateProfile(updated)
@@ -79,7 +94,7 @@ export default function ProfileTab({ userProfile, onUpdateProfile, onResetProfil
             className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 transition-all flex items-center gap-1.5"
           >
             <Trash2 className="w-3.5 h-3.5" />
-            Reset Onboarding
+            Sign Out / Reset
           </button>
         </div>
 
@@ -88,7 +103,7 @@ export default function ProfileTab({ userProfile, onUpdateProfile, onResetProfil
           <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
             <div className="flex items-center gap-2">
               <Sliders className="w-5 h-5 text-brand-500" />
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">Account Details</h3>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Account & Vector Preferences</h3>
             </div>
 
             {savedSuccess && (
@@ -119,24 +134,24 @@ export default function ProfileTab({ userProfile, onUpdateProfile, onResetProfil
               </label>
               <input
                 type="email"
+                readOnly
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-field"
+                className="input-field bg-slate-100 dark:bg-slate-800/50 cursor-not-allowed opacity-80"
               />
             </div>
           </div>
 
-          {/* Interest Tags */}
+          {/* Explicit Selected Interest Chips */}
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <Tag className="w-3.5 h-3.5 text-brand-500" />
-                Personalized Interest Vector Tags
+                Explicitly Selected Preferences
               </span>
               <span className="text-xs text-slate-500">{selectedTags.length} active</span>
             </label>
 
-            <div className="flex flex-wrap gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 max-h-60 overflow-y-auto">
+            <div className="flex flex-wrap gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 max-h-48 overflow-y-auto">
               {ALL_TAGS.map((tag) => {
                 const isSelected = selectedTags.includes(tag)
                 return (
@@ -158,11 +173,36 @@ export default function ProfileTab({ userProfile, onUpdateProfile, onResetProfil
             </div>
           </div>
 
-          {/* RAG Vector Embedding Explanation */}
-          <div className="p-4 rounded-2xl bg-brand-50/60 dark:bg-brand-950/40 border border-brand-200/60 dark:border-brand-800/40 text-xs text-brand-900 dark:text-brand-300 flex items-start gap-3">
-            <Sparkles className="w-5 h-5 text-brand-500 flex-shrink-0 mt-0.5" />
-            <div className="leading-relaxed">
-              <strong className="font-bold">Dynamic RAG Embedding System:</strong> These interest tags are encoded into dense vectors (`all-MiniLM-L6-v2`) and combined with real-time user query vectors in the Copilot search backend to produce personalized product recommendations.
+          {/* AI-Derived Interests Section with Merge Button */}
+          <div className="p-4 rounded-2xl bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800/40 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Cpu className="w-4 h-4 text-indigo-500" />
+                <h4 className="text-xs font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wider">
+                  AI-Derived Interests (Inferred from Conversations)
+                </h4>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleMergeDerived}
+                className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+              >
+                <GitMerge className="w-3.5 h-3.5" />
+                {mergedSuccess ? 'Merged!' : 'Merge into Preferences'}
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5">
+              {derivedTags.length > 0 ? (
+                derivedTags.map((tag, i) => (
+                  <span key={i} className="chip chip-soft text-xs">
+                    {tag}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-slate-500 italic">No interests derived yet. Chat with Copilot to automatically learn interests!</span>
+              )}
             </div>
           </div>
 

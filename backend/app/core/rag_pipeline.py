@@ -214,9 +214,20 @@ Instructions:
     except Exception as e:
         agent_message = f"Here are the top product recommendations matching '{user_query}' from our catalog database:"
 
+    # Infer new derived interests from retrieved products and query
+    derived_interests: list[str] = []
+    for doc in retrieved_docs:
+        cat = doc.metadata.get("category", "")
+        if cat:
+            parts = [p.strip() for p in cat.replace(">", ",").split(",") if p.strip()]
+            for p in parts:
+                if p not in derived_interests and p not in ["Clothing, Shoes & Jewelry", "General"]:
+                    derived_interests.append(p)
+
     return {
         "agentMessage": agent_message,
         "products": recommended_products,
         "candidateCount": len(docs_and_scores),
         "shouldClarify": "?" in agent_message and ("color" in agent_message.lower() or "size" in agent_message.lower() or "preference" in agent_message.lower() or "which" in agent_message.lower()),
+        "derivedInterests": derived_interests[:6],
     }
