@@ -1,0 +1,54 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./copilot.db"
+}
+
+generator client {
+  provider  = "prisma-client-py"
+  interface = "asyncio"
+}
+
+model Session {
+  id               String           @id @default(uuid())
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  turnCount        Int              @default(0)
+  status           String           @default("ACTIVE") // ACTIVE, CONVERTED, ABORTED
+  targetAsin       String?
+  messages         Message[]
+  stateSnapshots   StateSnapshot[]
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  sessionId  String
+  session    Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sender     String   // "USER" | "AGENT"
+  content    String
+  turnNumber Int
+  createdAt  DateTime @default(now())
+}
+
+model StateSnapshot {
+  id              String   @id @default(uuid())
+  sessionId       String
+  session         Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  turnNumber      Int
+  intentTrack     String   // "BUYING" | "BROWSING"
+  hardFilters     String   // JSON string: e.g. {"category": "Shoes", "max_price": 50}
+  negativeFilters String   // JSON string: e.g. ["leather", "heels"]
+  softPreferences String   // JSON string: e.g. ["breathable", "running"]
+  candidateCount  Int
+  entropyScore    Float?
+  createdAt       DateTime @default(now())
+}
+
+model Product {
+  asin          String   @id
+  title         String
+  category      String
+  price         Float?
+  features      String?  // JSON string or text
+  description   String?
+  denseVectorId Int?
+}

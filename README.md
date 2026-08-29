@@ -1,251 +1,168 @@
-# Volc Agent Launchpad
+# 🛒 Shopping Copilot — Entropy-Driven Conversational Commerce
 
-A minimal Agent platform for three-day middleware hackathons. It provides Agent
-CRUD, a browser Playground, persistent workspaces, and Codex CLI backed by the
-Volcengine Ark Responses API.
+An **Active State-Machine Agent** for e-commerce search and recommendation.  
+BM25 + Dense Embeddings → RRF → Cross-Encoder reranking, with LLM slot extraction and entropy-triggered clarifications.
 
-Run it locally with Docker, Colima, or rootless Podman, or deploy it to
-Volcengine ECS.
+---
 
-> [!WARNING]
-> This is a single-user proof of concept. It intentionally has no identity,
-> tracing, audit, or hardened sandbox middleware. Do not use production data or
-> credentials. See [SECURITY.md](SECURITY.md).
+## Quick Start
 
-## Screenshots
+### Prerequisites
 
-### Agent Playground
+| Tool | Version |
+|------|---------|
+| Python | ≥ 3.10 |
+| Node.js | ≥ 18 |
+| Ollama | latest |
 
-![Agent Playground showing lifecycle controls, starter prompts, and the Codex Runtime](docs/assets/playground.jpg)
-
-### Create an Agent
-
-![Create Agent form with name, description, and workspace instructions](docs/assets/create-agent.jpg)
-
-## Features
-
-- React and TypeScript Web UI
-- Agent create, edit, start, stop, delete, and multi-turn chat
-- Fastify control plane with asynchronous Run state
-- Persistent Agent workspaces and Codex sessions
-- Disposable Docker, Colima, or Podman container for each local turn
-- Docker and Terraform deployment paths for Volcengine ECS
-
-## Requirements
-
-- Node.js 22+
-- npm 10+
-- Docker, Colima, or Podman
-- A Volcengine Ark API key and endpoint that supports the Responses API
-
-Codex CLI is included in the Runtime image and is not required on the host.
-
-## Local browser SOP
-
-### 1. Check the local tools
-
-Install Node.js 22+ and one supported container engine, then verify them:
-
+Pull the required Ollama model:
 ```bash
-node --version
-npm --version
-docker --version        # Docker Desktop, Docker Engine, or Colima
-podman --version        # Use this instead when running Podman
+ollama pull llama3.1:8b
 ```
 
-Only one container engine is required. Codex CLI is already included in the
-Runtime image.
+---
 
-### 2. Clone the repository
-
-```bash
-git clone <repository-url> volc-agent-launchpad
-cd volc-agent-launchpad
-```
-
-Skip this step when already working from the repository root.
-
-### 3. Start the POC
+### Backend Setup
 
 ```bash
-ARK_API_KEY=your-ark-api-key \
-ARK_MODEL=ep-your-endpoint-id \
-npm run poc
+# 1. Navigate to backend
+cd backend
+
+# 2. Create and activate a virtual environment
+python -m venv .venv
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
+
+# 3. Install Python dependencies
+pip install -r requirements.txt
+
+# 4. Copy the Prisma schema into the app folder (required by prisma-client-py)
+cp schema.prisma app/schema.prisma
+
+# 5. Generate the Prisma client (run from backend/ or wherever schema.prisma lives)
+prisma generate --schema=schema.prisma
+
+# 6. Push the schema to create the SQLite database
+prisma db push --schema=schema.prisma
+
+# 7. Start the FastAPI server (hot-reload enabled)
+python run.py
 ```
 
-The first run installs Node.js dependencies and builds the Runtime image. The
-script automatically selects Docker, Colima, or Podman.
+The API is now available at **http://localhost:8000**  
+Interactive docs: **http://localhost:8000/docs**
 
-### 4. Open the browser
+---
 
-Visit <http://localhost:3000>, or open it from the terminal:
+### Frontend Setup
 
 ```bash
-open http://localhost:3000       # macOS
-xdg-open http://localhost:3000   # Linux desktop
-```
+# Open a new terminal tab
 
-In the Web UI:
+# 1. Navigate to frontend
+cd frontend
 
-1. Select **Create Agent**.
-2. Enter a name, description, and workspace instructions.
-3. Select **Create Agent** again.
-4. Enter a task in the Playground, for example:
-
-   ```text
-   Create a TypeScript hello-world CLI, add a test, and run it.
-   ```
-
-The Agent can write files, run commands, and continue the same Codex session in
-later messages.
-
-### 5. Stop and resume
-
-Press `Ctrl+C` in the startup terminal. The script removes temporary Runtime
-containers but keeps Agent workspaces and conversations.
-
-- macOS state: `~/.volc-agent-launchpad/`
-- Linux state: `.local/`
-- Custom location: set `LOCAL_POC_DATA_ROOT`
-
-Run the same `npm run poc` command to continue later.
-
-### Select a specific container engine
-
-Force Podman when multiple engines are installed:
-
-```bash
-CONTAINER_ENGINE=podman \
-ARK_API_KEY=your-ark-api-key \
-ARK_MODEL=ep-your-endpoint-id \
-npm run poc
-```
-
-Colima uses `CONTAINER_ENGINE=docker` because it exposes the Docker CLI.
-
-For a clean Linux host, follow the
-[rootless Podman setup](docs/LOCAL_POC.md#rootless-podman-on-linux).
-
-## Docker Compose
-
-Create and edit the configuration:
-
-```bash
-./scripts/bootstrap-local.sh
-```
-
-Required values in `.env`:
-
-```dotenv
-ARK_API_KEY=your-ark-api-key
-ARK_MODEL=ep-your-endpoint-id
-APP_AUTH_TOKEN=replace-with-at-least-24-random-characters
-```
-
-Start the application:
-
-```bash
-docker compose up --build
-```
-
-Open <http://localhost:3000>. Stop it without deleting Agent data:
-
-```bash
-docker compose down
-```
-
-## Development
-
-```bash
+# 2. Install dependencies
 npm install
-cp .env.example .env
-npm install --global @openai/codex@0.111.0
+
+# 3. Start the Vite dev server
 npm run dev
 ```
 
-- Web UI: <http://localhost:5173>
-- API: <http://localhost:3000>
+The UI is now available at **http://localhost:3000**
 
-Use local paths in `.env` when running outside Docker:
+---
 
-```dotenv
-APP_DATA_DIR=.data
-AGENT_WORKSPACE_ROOT=workspaces
-CODEX_HOME=codex-home
-```
+## Loading Products into the Index
 
-## Deployment
-
-- [Existing Linux ECS with Docker](docs/DEPLOYMENT.md#existing-linux-ecs)
-- [Complete Volcengine environment with Terraform](docs/DEPLOYMENT.md#terraform-deployment)
-- [Local Docker, Colima, and Podman details](docs/LOCAL_POC.md)
-
-The existing-ECS script deploys from the current source tree:
+The backend exposes `POST /api/products/load` to seed the in-memory search index.  
+Example using curl:
 
 ```bash
-cp .env.example .env.production
-./scripts/deploy-existing-ecs.sh .env.production
+curl -X POST http://localhost:8000/api/products/load \
+  -H "Content-Type: application/json" \
+  -d '{
+    "products": [
+      {
+        "asin": "B001234567",
+        "title": "Nike Air Zoom Running Shoes",
+        "category": "Shoes",
+        "price": 89.99,
+        "features": "Breathable mesh, cushioned sole, lightweight",
+        "description": "Ideal for long-distance running and daily training."
+      }
+    ]
+  }'
 ```
 
-The Terraform path provisions VPC, subnet, security group, ECS, and EIP:
+---
 
-```bash
-cp deploy/volcengine/terraform.tfvars.example \
-  deploy/volcengine/terraform.tfvars
-./scripts/deploy-volcengine.sh
+## API Reference
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/sessions` | Create a new shopping session |
+| `POST` | `/api/sessions/{id}/turn` | Process a conversational turn |
+| `GET`  | `/api/sessions/{id}/state` | Inspect current slot state |
+| `POST` | `/api/products/load` | Load products into search index |
+| `GET`  | `/health` | Health check |
+
+---
+
+## Architecture
+
+```
+User Message
+    │
+    ▼
+Intent Router (classify_intent) ──► BUYING / BROWSING
+    │
+    ▼
+State Machine (Ollama llama3.1:8b)
+  → Extract: hardFilters, negativeFilters, softPreferences
+  → Apply Intent Overrides
+    │
+    ▼
+Retriever (RRF)
+  ├─ BM25 (rank-bm25)
+  └─ Dense (all-MiniLM-L6-v2)
+    │
+    ▼
+Entropy Check
+  ├─ Pool > 100 & H > 1.5 → Clarification Question
+  └─ Pool ≤ 30 or Turn ≥ 3 → Cross-Encoder Reranker (ms-marco-MiniLM-L-6-v2)
+                                      │
+                                      ▼
+                              Top-10 Recommendations
 ```
 
-## Configuration
+---
 
-| Variable | Default | Purpose |
-| --- | --- | --- |
-| `ARK_API_KEY` | Required | Ark model API key. |
-| `ARK_MODEL` | Required | Responses-capable endpoint or model ID. |
-| `ARK_BASE_URL` | Beijing v3 endpoint | Ark OpenAI-compatible API URL. |
-| `APP_AUTH_TOKEN` | Empty on loopback | Shared demo token; use 24+ random characters remotely. |
-| `RUNTIME_PROVIDER` | `local-process` | `container` for disposable local Runtime containers. |
-| `CODEX_SANDBOX_MODE` | `workspace-write` | Codex inner sandbox mode. |
-| `CODEX_TIMEOUT_MS` | `600000` | Maximum duration of one turn. |
-| `LOCAL_POC_DATA_ROOT` | Platform-specific | Local metadata, workspace, and session directory. |
+## Project Structure
 
-See [.env.example](.env.example) for all Runtime and resource-limit options.
-
-## How it works
-
-```mermaid
-flowchart LR
-    UI["React Web UI"] --> API["Fastify control plane"]
-    API --> Store["JSON metadata and Agent workspaces"]
-    API --> Runtime{"Runtime provider"}
-    Runtime -->|Local POC| Container["Disposable Docker / Colima / Podman container"]
-    Runtime -->|ECS profile| Codex["Codex CLI in application container"]
-    Container --> Ark["Volcengine Ark Responses API"]
-    Codex --> Ark
 ```
-
-The first turn uses `codex exec`; later turns resume the stored Codex thread.
-Deleting an Agent archives its workspace under `workspaces/.deleted/`.
-
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for component and extension
-boundaries.
-
-## Validation
-
-```bash
-npm run check
-terraform fmt -check -recursive deploy/volcengine
-docker compose config
+backend/
+├── app/
+│   ├── api/routes.py          # FastAPI endpoints
+│   ├── core/
+│   │   ├── state_machine.py   # Slot tracking & LLM override logic
+│   │   ├── router.py          # Buying vs Browsing intent routing
+│   │   ├── retriever.py       # In-memory BM25 + Dense RRF
+│   │   ├── entropy.py         # Variance calculation & cutoff logic
+│   │   └── reranker.py        # Cross-Encoder Top-30 reranking
+│   ├── db/prisma.py           # Prisma client lifecycle
+│   └── main.py                # FastAPI entrypoint
+├── schema.prisma              # Prisma schema definition
+├── requirements.txt
+└── run.py
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── ChatPlayground.jsx # Conversational UI
+│   │   ├── StateInspector.jsx # Real-time slot debugger
+│   │   └── ProductGrid.jsx    # Ranked product cards
+│   ├── App.jsx                # 3-panel layout
+│   └── index.jsx
+├── index.html
+├── vite.config.js
+└── package.json
 ```
-
-## Documentation
-
-- [Architecture](docs/ARCHITECTURE.md)
-- [Local POC](docs/LOCAL_POC.md)
-- [Deployment](docs/DEPLOYMENT.md)
-- [Hackathon extension guide](docs/HACKATHON_EXTENSION_GUIDE.md)
-- [Security policy](SECURITY.md)
-- [Contributing](CONTRIBUTING.md)
-
-## License
-
-[MIT](LICENSE)
