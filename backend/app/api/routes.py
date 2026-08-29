@@ -158,7 +158,24 @@ async def process_turn(session_id: str, body: TurnRequest):
     intent_track = classify_intent(body.message, current_state.intent_track)
     current_state.intent_track = intent_track
 
-    # --- Execute LangChain RAG Pipeline ---
+    # --- Execute Core Logic via starter.agent.Agent ---
+    from starter.agent import Agent
+    global _global_agent
+    if "_global_agent" not in globals() or _global_agent is None:
+        _global_agent = Agent()
+
+    agent_resp = _global_agent.respond(
+        session_id=session_id,
+        user_message=body.message,
+        turn=turn_number,
+        top_k=8,
+    )
+
+    agent_message = agent_resp.get("message", "")
+    recs = agent_resp.get("recommendations", [])
+    ask_attr = agent_resp.get("ask_attribute")
+
+    # Fetch product metadata details for frontend cards
     from app.core.rag_pipeline import process_rag_turn
     rag_result = process_rag_turn(
         user_query=body.message,
@@ -166,11 +183,9 @@ async def process_turn(session_id: str, body: TurnRequest):
         history=history,
         top_k=8,
     )
-
-    agent_message = rag_result["agentMessage"]
-    products_out = rag_result["products"]
-    should_clarify = rag_result.get("shouldClarify", False)
-    candidate_count = rag_result.get("candidateCount", len(products_out))
+    products_out = rag_result.get("products", [])
+    should_clarify = ask_attr is not None or rag_result.get("shouldClarify", False)
+    candidate_count = len(products_out)
 
     # --- Persist agent message ---
     await db.message.create(
