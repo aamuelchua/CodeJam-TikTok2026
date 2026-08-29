@@ -48,7 +48,6 @@ backend/app/core/__pycache__/
 # ── Misc artifacts ──────────────────────────────────────────
 .data/
 .local/
-data/
 workspaces/
 codex-home/
 coverage/
