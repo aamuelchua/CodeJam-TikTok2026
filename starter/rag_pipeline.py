@@ -312,9 +312,11 @@ def get_embedding_model():
     return None
 
 
+
 def load_full_catalog():
     return get_global_pipeline().products
 
 
 def get_bm25_index():
     return get_global_pipeline()
+
