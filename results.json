@@ -1,1413 +1,1641 @@
 {
-  "summary": {
-    "hit_rate_at_10": 0.995,
-    "mrr": 0.9875,
-    "mttc": 1.05,
-    "efficiency": 0.995,
-    "technical_score": 0.99275,
-    "total_sessions": 200,
-    "elapsed_seconds": 45.92
+  "sample_count": 200,
+  "hit_rate_at_10": 0.125,
+  "mrr": 0.068034,
+  "mttc": 9.81,
+  "efficiency": 0.119,
+  "recommended_technical_score": 0.10671,
+  "reported_token_usage": {
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_tokens": 0
+  },
+  "scenario_metrics": {
+    "boundary": {
+      "sample_count": 10,
+      "hit_rate_at_10": 0.0,
+      "mrr": 0.0,
+      "mttc": 11.0
+    },
+    "browsing": {
+      "sample_count": 80,
+      "hit_rate_at_10": 0.025,
+      "mrr": 0.004514,
+      "mttc": 10.75
+    },
+    "buying": {
+      "sample_count": 80,
+      "hit_rate_at_10": 0.2375,
+      "mrr": 0.126508,
+      "mttc": 8.625
+    },
+    "intent_override": {
+      "sample_count": 30,
+      "hit_rate_at_10": 0.133333,
+      "mrr": 0.104167,
+      "mttc": 10.066667
+    }
   },
   "sessions": [
     {
-      "session_id": "session_1",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09PYB7B6Z"
-    },
-    {
-      "session_id": "session_2",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B071X54486"
-    },
-    {
-      "session_id": "session_3",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09YMTWDXJ"
-    },
-    {
-      "session_id": "session_4",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07C2XPZ6D"
-    },
-    {
-      "session_id": "session_5",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B074G1JP8Z"
-    },
-    {
-      "session_id": "session_6",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B071F2Z7JG"
-    },
-    {
-      "session_id": "session_7",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08PF98BV4"
-    },
-    {
-      "session_id": "session_8",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BPCC1KBT"
-    },
-    {
-      "session_id": "session_9",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07GXHPWTJ"
-    },
-    {
-      "session_id": "session_10",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0929KL5W7"
-    },
-    {
-      "session_id": "session_11",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BXP6MG3X"
-    },
-    {
-      "session_id": "session_12",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08FFGQF72"
-    },
-    {
-      "session_id": "session_13",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C65TFM9F"
-    },
-    {
-      "session_id": "session_14",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B088QF5G58"
-    },
-    {
-      "session_id": "session_15",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 0.5,
-      "target_asin": "B08513YB2T"
-    },
-    {
-      "session_id": "session_16",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07PH3X7QK"
-    },
-    {
-      "session_id": "session_17",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B089RXP8K2"
-    },
-    {
-      "session_id": "session_18",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07H3T5YGH"
-    },
-    {
-      "session_id": "session_19",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B076VQQ962"
-    },
-    {
-      "session_id": "session_20",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08P4SSFX4"
-    },
-    {
-      "session_id": "session_21",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07K4FX4WZ"
-    },
-    {
-      "session_id": "session_22",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08F5G843H"
-    },
-    {
-      "session_id": "session_23",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08ZKFD4GM"
-    },
-    {
-      "session_id": "session_24",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B076X3JXMW"
-    },
-    {
-      "session_id": "session_25",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BRS1DHVQ"
-    },
-    {
-      "session_id": "session_26",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B093R14VP1"
-    },
-    {
-      "session_id": "session_27",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0858VDFDW"
-    },
-    {
-      "session_id": "session_28",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B9ZYDDZ1"
-    },
-    {
-      "session_id": "session_29",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01IAKCZEK"
-    },
-    {
-      "session_id": "session_30",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09V5RTXG9"
-    },
-    {
-      "session_id": "session_31",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BQDTGHMZ"
-    },
-    {
-      "session_id": "session_32",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0834HZQZF"
-    },
-    {
-      "session_id": "session_33",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08134XNNB"
-    },
-    {
-      "session_id": "session_34",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 0.5,
-      "target_asin": "B07Q9PNNB5"
-    },
-    {
-      "session_id": "session_35",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BN6CCHB7"
-    },
-    {
-      "session_id": "session_36",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08BWR1T58"
-    },
-    {
-      "session_id": "session_37",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08KKBBMMD"
-    },
-    {
-      "session_id": "session_38",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07B5RGY2N"
-    },
-    {
-      "session_id": "session_39",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07TZCJW9X"
-    },
-    {
-      "session_id": "session_40",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08ZJWTCDR"
-    },
-    {
-      "session_id": "session_41",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09MSY8926"
-    },
-    {
-      "session_id": "session_42",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01LWOGORL"
-    },
-    {
-      "session_id": "session_43",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C1KNGLPX"
-    },
-    {
-      "session_id": "session_44",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09BQ4G5BD"
-    },
-    {
-      "session_id": "session_45",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07Z8NTWVV"
-    },
-    {
-      "session_id": "session_46",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B42PVX1F"
-    },
-    {
-      "session_id": "session_47",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BYZX7B1L"
-    },
-    {
-      "session_id": "session_48",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00VQBMJUQ"
-    },
-    {
-      "session_id": "session_49",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08G4WVYLJ"
-    },
-    {
-      "session_id": "session_50",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07BYR6T7W"
-    },
-    {
-      "session_id": "session_51",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07N1624C5"
-    },
-    {
-      "session_id": "session_52",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09G2ZNZY4"
-    },
-    {
-      "session_id": "session_53",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07TZK3GZK"
-    },
-    {
-      "session_id": "session_54",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08PP1ZJQ5"
-    },
-    {
-      "session_id": "session_55",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C1TDJ9HZ"
-    },
-    {
-      "session_id": "session_56",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B2RF64YD"
-    },
-    {
-      "session_id": "session_57",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B085RX192V"
-    },
-    {
-      "session_id": "session_58",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08L83YQTZ"
-    },
-    {
-      "session_id": "session_59",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01H6DGA16"
-    },
-    {
-      "session_id": "session_60",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08R61K9B9"
-    },
-    {
-      "session_id": "session_61",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08HCP9YTV"
-    },
-    {
-      "session_id": "session_62",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B015K51VPM"
-    },
-    {
-      "session_id": "session_63",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09MKL5TBK"
-    },
-    {
-      "session_id": "session_64",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 0.5,
-      "target_asin": "B019DU687Q"
-    },
-    {
-      "session_id": "session_65",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BSQ9TCYC"
-    },
-    {
-      "session_id": "session_66",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BFLFSB2Y"
-    },
-    {
-      "session_id": "session_67",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09G9BXJZM"
-    },
-    {
-      "session_id": "session_68",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08SH8GF6K"
-    },
-    {
-      "session_id": "session_69",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07ZFBQ76H"
-    },
-    {
-      "session_id": "session_70",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B010LVBVKA"
-    },
-    {
-      "session_id": "session_71",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B06XRFSDL4"
-    },
-    {
-      "session_id": "session_72",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09JG4V9ZR"
-    },
-    {
-      "session_id": "session_73",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07QPM54V7"
-    },
-    {
-      "session_id": "session_74",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07N15QTKC"
-    },
-    {
-      "session_id": "session_75",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08L13LJ5M"
-    },
-    {
-      "session_id": "session_76",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07XT6PLTB"
-    },
-    {
-      "session_id": "session_77",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B077JDSZ27"
-    },
-    {
-      "session_id": "session_78",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C5RLJDSF"
-    },
-    {
-      "session_id": "session_79",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BFRMX3JG"
-    },
-    {
-      "session_id": "session_80",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BPRQY4CF"
-    },
-    {
-      "session_id": "session_81",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BSS36XCS"
-    },
-    {
-      "session_id": "session_82",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09BPZCWDP"
-    },
-    {
-      "session_id": "session_83",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BPMCJ1RD"
-    },
-    {
-      "session_id": "session_84",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08WKZNFG2"
-    },
-    {
-      "session_id": "session_85",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C3YJMRRD"
-    },
-    {
-      "session_id": "session_86",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07WN8N9Q7"
-    },
-    {
-      "session_id": "session_87",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BT158RRR"
-    },
-    {
-      "session_id": "session_88",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07Z6J5N6Y"
-    },
-    {
-      "session_id": "session_89",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BXMCZLZV"
-    },
-    {
-      "session_id": "session_90",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07MGR6D5M"
-    },
-    {
-      "session_id": "session_91",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C5XB43GG"
-    },
-    {
-      "session_id": "session_92",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07FKNZC43"
-    },
-    {
-      "session_id": "session_93",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07PYB8F1G"
-    },
-    {
-      "session_id": "session_94",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01L99SW78"
-    },
-    {
-      "session_id": "session_95",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09N78FT2W"
-    },
-    {
-      "session_id": "session_96",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B074K2QX3M"
-    },
-    {
-      "session_id": "session_97",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0785RCKBT"
-    },
-    {
-      "session_id": "session_98",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08CZ34D75"
-    },
-    {
-      "session_id": "session_99",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0971YMPCR"
-    },
-    {
-      "session_id": "session_100",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B002OHE4D6"
-    },
-    {
-      "session_id": "session_101",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07QMS8TX8"
-    },
-    {
-      "session_id": "session_102",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07PWZXZVX"
-    },
-    {
-      "session_id": "session_103",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BT8T2FQ3"
-    },
-    {
-      "session_id": "session_104",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00QSAICLU"
-    },
-    {
-      "session_id": "session_105",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07Q46M2J2"
-    },
-    {
-      "session_id": "session_106",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0776SVXW9"
-    },
-    {
-      "session_id": "session_107",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01KPFK9ZA"
-    },
-    {
-      "session_id": "session_108",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01I21CI7G"
-    },
-    {
-      "session_id": "session_109",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B016OT9D3K"
-    },
-    {
-      "session_id": "session_110",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C277G9FW"
-    },
-    {
-      "session_id": "session_111",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07H7BWMQF"
-    },
-    {
-      "session_id": "session_112",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B086ZNJY8K"
-    },
-    {
-      "session_id": "session_113",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08CTFPBN5"
-    },
-    {
-      "session_id": "session_114",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07H34Z5V6"
-    },
-    {
-      "session_id": "session_115",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08VWZBYPY"
-    },
-    {
-      "session_id": "session_116",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07S2Y3THP"
-    },
-    {
-      "session_id": "session_117",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07HJ18QRQ"
-    },
-    {
-      "session_id": "session_118",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09M72C8PG"
-    },
-    {
-      "session_id": "session_119",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BBLR3QB2"
-    },
-    {
-      "session_id": "session_120",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08GPGX2QG"
-    },
-    {
-      "session_id": "session_121",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08HS712ZB"
-    },
-    {
-      "session_id": "session_122",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B074KJ49F2"
-    },
-    {
-      "session_id": "session_123",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07CZ84YFJ"
-    },
-    {
-      "session_id": "session_124",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07TN1845M"
-    },
-    {
-      "session_id": "session_125",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07VCYFB5D"
-    },
-    {
-      "session_id": "session_126",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09M84R91V"
-    },
-    {
-      "session_id": "session_127",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B8DX189T"
-    },
-    {
-      "session_id": "session_128",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BNP1RZ2W"
-    },
-    {
-      "session_id": "session_129",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0936ZJJ68"
-    },
-    {
-      "session_id": "session_130",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07X9V6HZX"
-    },
-    {
-      "session_id": "session_131",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07PQQQ8ZL"
-    },
-    {
-      "session_id": "session_132",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08X2X83DW"
-    },
-    {
-      "session_id": "session_133",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01KILT64Q"
-    },
-    {
-      "session_id": "session_134",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B081SF3QRL"
-    },
-    {
-      "session_id": "session_135",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C6BL4RNN"
-    },
-    {
-      "session_id": "session_136",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B091F54MWM"
-    },
-    {
-      "session_id": "session_137",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01N67CJGX"
-    },
-    {
-      "session_id": "session_138",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B4BRW7JT"
-    },
-    {
-      "session_id": "session_139",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09SGYPW3M"
-    },
-    {
-      "session_id": "session_140",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09BT6LSJV"
-    },
-    {
-      "session_id": "session_141",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BLH7JHG8"
-    },
-    {
-      "session_id": "session_142",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07YRGC1Q1"
-    },
-    {
-      "session_id": "session_143",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01H54X6CM"
-    },
-    {
-      "session_id": "session_144",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08LMMDYV7"
-    },
-    {
-      "session_id": "session_145",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00IJZZWGA"
-    },
-    {
-      "session_id": "session_146",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BCQWYQLQ"
-    },
-    {
-      "session_id": "session_147",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B077276QGC"
-    },
-    {
-      "session_id": "session_148",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BQC2NRG2"
-    },
-    {
-      "session_id": "session_149",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07CBYYHTL"
-    },
-    {
-      "session_id": "session_150",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07P6MPQY5"
-    },
-    {
-      "session_id": "session_151",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08CFNQNJK"
-    },
-    {
-      "session_id": "session_152",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B000EQU0NW"
-    },
-    {
-      "session_id": "session_153",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07BMJ77FR"
-    },
-    {
-      "session_id": "session_154",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00CYNKSTE"
-    },
-    {
-      "session_id": "session_155",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C4VLWWYY"
-    },
-    {
-      "session_id": "session_156",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C3KZXV4B"
-    },
-    {
-      "session_id": "session_157",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00BCHDM14"
-    },
-    {
-      "session_id": "session_158",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B012ZM6RGQ"
-    },
-    {
-      "session_id": "session_159",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00UHLFR32"
-    },
-    {
-      "session_id": "session_160",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01AAANF2Y"
-    },
-    {
-      "session_id": "session_161",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B6N6TJ6V"
-    },
-    {
-      "session_id": "session_162",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B71JNMQY"
-    },
-    {
-      "session_id": "session_163",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0834T68X3"
-    },
-    {
-      "session_id": "session_164",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C61FG7GL"
-    },
-    {
-      "session_id": "session_165",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09XHSLX4X"
-    },
-    {
-      "session_id": "session_166",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B00IHW88W0"
-    },
-    {
-      "session_id": "session_167",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07357B79L"
-    },
-    {
-      "session_id": "session_168",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08YYHDJD1"
-    },
-    {
-      "session_id": "session_169",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0829R9M5G"
-    },
-    {
-      "session_id": "session_170",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08LRQX5RH"
-    },
-    {
-      "session_id": "session_171",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BFVFFHKS"
-    },
-    {
-      "session_id": "session_172",
+      "sample_id": "public_0001",
+      "scenario_type": "buying",
       "hit": false,
-      "hit_turn": null,
-      "mrr": 0.0,
-      "target_asin": "B0829PZGBB"
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_173",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07THT4G8N"
+      "sample_id": "public_0002",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_174",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0794VPVBH"
+      "sample_id": "public_0003",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_175",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07D5M61T2"
+      "sample_id": "public_0004",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_176",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C3MKNZJN"
+      "sample_id": "public_0005",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_177",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07HV9WW6Q"
+      "sample_id": "public_0006",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_178",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01FWQ8NH8"
+      "sample_id": "public_0007",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_179",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08JK818ZD"
+      "sample_id": "public_0008",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_180",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01HSMYV8E"
+      "sample_id": "public_0009",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_181",
+      "sample_id": "public_0010",
+      "scenario_type": "buying",
       "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08M3WKDFJ"
+      "first_hit_turn": 1,
+      "best_rank": 8,
+      "reciprocal_rank": 0.125
     },
     {
-      "session_id": "session_182",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C5XBLB2P"
+      "sample_id": "public_0011",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_183",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07Z2KSZR3"
+      "sample_id": "public_0012",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_184",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BWLFCTTF"
+      "sample_id": "public_0013",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_185",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0BCW4QKV5"
+      "sample_id": "public_0014",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_186",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07XPLHXC1"
+      "sample_id": "public_0015",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_187",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B000GQ1F3O"
+      "sample_id": "public_0016",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_188",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0B5ZS2J2W"
+      "sample_id": "public_0017",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_189",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C614ZPK3"
+      "sample_id": "public_0018",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_190",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B01MQUDPPO"
+      "sample_id": "public_0019",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_191",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B083TB1NDK"
+      "sample_id": "public_0020",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_192",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B0C62MF2HV"
+      "sample_id": "public_0021",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_193",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07YM55NLW"
+      "sample_id": "public_0022",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_194",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B09WR1NZ48"
+      "sample_id": "public_0023",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_195",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B072M4K5LF"
+      "sample_id": "public_0024",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_196",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B073T364MM"
+      "sample_id": "public_0025",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_197",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07FDNP55K"
+      "sample_id": "public_0026",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_198",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B08K1ZJZ4N"
+      "sample_id": "public_0027",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_199",
-      "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B089M57PSQ"
+      "sample_id": "public_0028",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     },
     {
-      "session_id": "session_200",
+      "sample_id": "public_0029",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0030",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0031",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0032",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0033",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0034",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0035",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0036",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0037",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0038",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0039",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0040",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0041",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0042",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0043",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0044",
+      "scenario_type": "buying",
       "hit": true,
-      "hit_turn": 1,
-      "mrr": 1.0,
-      "target_asin": "B07VFZ2FC2"
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0045",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0046",
+      "scenario_type": "intent_override",
+      "hit": true,
+      "first_hit_turn": 4,
+      "best_rank": 8,
+      "reciprocal_rank": 0.125
+    },
+    {
+      "sample_id": "public_0047",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0048",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0049",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0050",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0051",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0052",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0053",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0054",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0055",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0056",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0057",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0058",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0059",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0060",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0061",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 2,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "sample_id": "public_0062",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0063",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0064",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0065",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0066",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0067",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 4,
+      "reciprocal_rank": 0.25
+    },
+    {
+      "sample_id": "public_0068",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0069",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0070",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0071",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0072",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0073",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0074",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0075",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0076",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0077",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0078",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0079",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0080",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0081",
+      "scenario_type": "browsing",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 9,
+      "reciprocal_rank": 0.1111111111111111
+    },
+    {
+      "sample_id": "public_0082",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0083",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0084",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0085",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0086",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0087",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0088",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 7,
+      "reciprocal_rank": 0.14285714285714285
+    },
+    {
+      "sample_id": "public_0089",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0090",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0091",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0092",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0093",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0094",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0095",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0096",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0097",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0098",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0099",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0100",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0101",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0102",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0103",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0104",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0105",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0106",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0107",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 10,
+      "reciprocal_rank": 0.1
+    },
+    {
+      "sample_id": "public_0108",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0109",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0110",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0111",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0112",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0113",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0114",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0115",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0116",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0117",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0118",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0119",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0120",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0121",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0122",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0123",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0124",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0125",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0126",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0127",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0128",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0129",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 3,
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "sample_id": "public_0130",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0131",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0132",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0133",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0134",
+      "scenario_type": "browsing",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 4,
+      "reciprocal_rank": 0.25
+    },
+    {
+      "sample_id": "public_0135",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0136",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0137",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0138",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0139",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0140",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0141",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0142",
+      "scenario_type": "intent_override",
+      "hit": true,
+      "first_hit_turn": 4,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0143",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 9,
+      "reciprocal_rank": 0.1111111111111111
+    },
+    {
+      "sample_id": "public_0144",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0145",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0146",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0147",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0148",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 8,
+      "reciprocal_rank": 0.125
+    },
+    {
+      "sample_id": "public_0149",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0150",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0151",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0152",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0153",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0154",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0155",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 10,
+      "reciprocal_rank": 0.1
+    },
+    {
+      "sample_id": "public_0156",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0157",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0158",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0159",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0160",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 3,
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "sample_id": "public_0161",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0162",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0163",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0164",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0165",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0166",
+      "scenario_type": "intent_override",
+      "hit": true,
+      "first_hit_turn": 4,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0167",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0168",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0169",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0170",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0171",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0172",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0173",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0174",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0175",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0176",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0177",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0178",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0179",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0180",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0181",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0182",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0183",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0184",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0185",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 2,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "sample_id": "public_0186",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0187",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0188",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0189",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0190",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0191",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0192",
+      "scenario_type": "boundary",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0193",
+      "scenario_type": "buying",
+      "hit": true,
+      "first_hit_turn": 1,
+      "best_rank": 2,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "sample_id": "public_0194",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0195",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0196",
+      "scenario_type": "browsing",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0197",
+      "scenario_type": "intent_override",
+      "hit": true,
+      "first_hit_turn": 4,
+      "best_rank": 1,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "sample_id": "public_0198",
+      "scenario_type": "intent_override",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0199",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
+    },
+    {
+      "sample_id": "public_0200",
+      "scenario_type": "buying",
+      "hit": false,
+      "first_hit_turn": null,
+      "best_rank": null,
+      "reciprocal_rank": 0.0
     }
   ]
 }

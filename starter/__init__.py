@@ -1,3 +1,2 @@
-from starter.agent import Agent
+"""Participant starter package."""
 
-__all__ = ["Agent"]

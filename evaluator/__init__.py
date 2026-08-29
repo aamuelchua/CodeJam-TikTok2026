@@ -1,1 +1,2 @@
-# Local Evaluator Package
+"""Public evaluation package."""
+
