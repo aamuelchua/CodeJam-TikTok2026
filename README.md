@@ -1,16 +1,62 @@
 # 🛒 Shopping Copilot — High-Performance Conversational Commerce
 
-An active **State-Machine RAG Agent** for e-commerce product discovery, conversational slot tracking, and multi-turn recommendation built for the **CodeJam / TechJam 2026 Hackathon**.
+An active **State-Machine RAG Agent** for conversational e-commerce product discovery, slot tracking, and multi-turn recommendation built for the **CodeJam / TechJam 2026 Hackathon**.
 
-Our engine combines **deterministic intent routing**, a **token-efficient conversational state machine**, a **universal probing strategy**, and a **custom-weighted in-memory SQLite FTS5 retrieval engine** to deliver sub-millisecond search latencies and high conversational precision.
+Our solution delivers sub-millisecond retrieval latencies, high conversational precision, and conservative token consumption through a **dual-execution architecture** powered by an **in-memory SQLite FTS5 multi-field BM25 retrieval engine**, a **fast-path regex state machine with LLM fallback**, and a **universal probing strategy**.
 
 ---
 
-## 1. Project Overview & Architecture
+## 1. Executive Summary & System Architecture
 
-Modern e-commerce search requires balancing conversational understanding with strict latency and token budgets. Heavy multi-agent LLM pipelines or dense vector stores often suffer from high token costs, high inference latency, and cold-start index bloat.
+### Dual Execution Paths
 
-Our solution implements a **3-stage hybrid architecture** optimized for high retrieval accuracy, minimal turns to conversion (MTTC), and conservative token usage.
+The repository provides two synchronized execution environments sharing the core `starter.agent.Agent` runtime:
+
+1. **Headless Benchmark Engine (`evaluator.local_evaluator`)**:
+   - Direct, high-throughput in-process Python execution (`evaluator/local_evaluator.py` $\rightarrow$ `starter/agent.py` $\rightarrow$ `starter/rag_pipeline.py`).
+   - Zero HTTP or networking overhead, evaluating 200 multi-turn test sessions in seconds.
+2. **Interactive Full-Stack Demo (FastAPI + React 18 + Vite)**:
+   - Real-time developer playground featuring a dual-pane **Conversational Copilot** and **State Inspector**.
+   - Visualizes live slot state (`intentTrack`, `hardFilters`, `negativeFilters`, `softPreferences`), real-time token telemetry, and ranked product metadata cards.
+
+```
+═════════════════════════════════════════════════════════════════════════════════
+                         DUAL EXECUTION ARCHITECTURE
+═════════════════════════════════════════════════════════════════════════════════
+
+  [Headless Benchmark Path]                     [Interactive Full-Stack Path]
+    ./run_eval.sh                                  ./start.sh
+         │                                              │
+         ▼                                              ▼
+  evaluator/local_evaluator.py                 React 18 Frontend (Vite)
+         │                                     (Chat & State Inspector UI)
+         │                                              │  HTTP /api/sessions/turn
+         │                                              ▼
+         │                                     FastAPI Backend (routes.py)
+         │                                              │
+         └──────────────────────┬───────────────────────┘
+                                │
+                                ▼
+                    starter/agent.py (Agent)
+                                │
+                                ▼
+                  starter/rag_pipeline.py (RAG)
+                                │
+    ┌───────────────────────────┼───────────────────────────┐
+    ▼                           ▼                           ▼
+[Stage 1: Intent & State]  [Stage 2: Universal Probe]  [Stage 3: SQLite FTS5]
+ • Fast-path Regex           • ask_attribute="other"     • Multi-field BM25
+ • Slot Erasure (Override)   • Rapid MTTC convergence   • In-memory Catalog
+ • Selective LLM Fallback                                • Custom Column Weights
+                                │
+                                ▼
+                   Top-10 Recommended Products
+═════════════════════════════════════════════════════════════════════════════════
+```
+
+---
+
+### 3-Stage RAG Pipeline Design
 
 ```
                       ┌─────────────────────────────────────────┐
@@ -21,141 +67,160 @@ Our solution implements a **3-stage hybrid architecture** optimized for high ret
              ┌───────────────────────────────────────────────────────────┐
              │ Stage 1: Intent Routing & Hybrid State Machine           │
              │                                                           │
-             │  • Fast-path Regex Slot Extractor (Category & Attributes) │
-             │  • Dynamic Intent Override & Slot Erasure Handling       │
-             │  • LLM Selective Invocation (Fallback for complex turns)  │
+             │  • Deterministic Fast-Path Regex (Category, Constraints)  │
+             │  • Dynamic Intent Override & Invalidation Slot Erasure    │
+             │  • Optional LLM Fallback (OpenAI-compatible / Offline)    │
              └─────────────────────────────┬─────────────────────────────┘
                                            │
                                            ▼
              ┌───────────────────────────────────────────────────────────┐
              │ Stage 2: Universal Probing Strategy                      │
              │                                                           │
-             │  • ask_attribute = "other" for rapid attribute gathering  │
-             │  • Reduces MTTC to ~2.89 turns across multi-turn sessions │
+             │  • Dynamic Probing: ask_attribute = "other"               │
+             │  • Unlocks Highest-Priority Remaining User Constraints   │
+             │  • Drives MTTC down to 2.895 Turns                        │
              └─────────────────────────────┬─────────────────────────────┘
                                            │
                                            ▼
              ┌───────────────────────────────────────────────────────────┐
-             │ Stage 3: Weighted SQLite FTS5 In-Memory Retrieval        │
+             │ Stage 3: High-Performance SQLite FTS5 Retrieval          │
              │                                                           │
-             │  • Multi-Field BM25 Ranking Engine                        │
-             │  • Column Weights: Title (12.0), Category (12.0),         │
-             │    Features (9.0), Details (2.0), Store (1.0), Desc (1.0) │
+             │  • In-Memory Virtual Table with unicode61 Tokenizer       │
+             │  • Tuned BM25 Multi-Field Column Weights:                 │
+             │    Title: 12.0 | Category: 12.0 | Features: 9.0           │
+             │    Details: 2.0 | Store: 1.0 | Description: 1.0           │
              └─────────────────────────────┬─────────────────────────────┘
                                            │
                                            ▼
                       ┌─────────────────────────────────────────┐
-                      │    Top-10 Recommended Products & State  │
+                      │   Top-10 Ranked Products + Telemetry    │
                       └─────────────────────────────────────────┘
 ```
 
-### Stage 1: Intent Routing & Hybrid State Machine
-- **Dual-Track Intent Detection**: Incoming queries are categorized into `BUYING` (hard constraints present) or `BROWSING` (exploratory preferences).
-- **Fast-Path Regex Slot Extraction**: Regex extractors parse product categories, explicit constraints (`key requirement is:`, `what matters is:`), and price boundaries without LLM overhead.
-- **Intent Override & Slot Erasure**: When a user changes their mind (e.g., *"Actually, ignore my earlier preference. What I need is..."*), the state machine erases invalidated prior constraints and isolates the active requirement.
-- **Token Conservation**: By relying on deterministic regex for standard conversational turns and reserving LLM inference (`llama3.1:8b` via LangChain) for complex ambiguity and intent overrides, we keep total evaluation token consumption to **~42k tokens across 200 sessions** (averaging only ~210 tokens per full session).
+#### Stage 1: Intent Routing & State Machine
+- **Dual-Track Intent Routing**: Detects conversational orientation (`BUYING` for targeted constraints vs. `BROWSING` for exploratory discovery).
+- **Fast-Path Regex Slot Extraction**: Extracts product categories, explicit constraints (`key requirement is:`, `what matters is:`), and price boundaries deterministically with zero latency.
+- **Intent Override & Slot Erasure**: When a customer changes their mind (e.g., *"Actually, ignore my earlier preference. What I need is..."*), the state machine identifies the negation, removes invalidated prior constraints (`sess["initial_pref"]`), and isolates the replacement requirement.
+- **Selective LLM Fallback**: An optional OpenAI-compatible LLM (`llama3.1:8b` via LangChain) can be invoked for deep conversational reasoning on ambiguous turns, while offline regex guarantees deterministic fallback. Total token consumption across all 200 evaluation sessions remains capped at **~42k tokens** (~210 tokens/session).
 
-### Stage 2: Universal Probing Strategy
-- In multi-turn dialogues, narrow attribute questions (e.g., asking only for *"color"*) risk stalling if the customer has other priority constraints.
-- We implement a **Universal Probing** strategy by setting `ask_attribute = "other"` during exploratory turns (Turns 1–4).
-- This prompts the simulated customer to disclose their highest-priority remaining hard and soft constraints, driving our **Mean Turns to Conversion (MTTC) down to 2.89 turns**.
+#### Stage 2: Universal Probing (`ask_attribute = "other"`)
+- In multi-turn commerce interactions, asking rigid single-attribute questions (e.g., prompting solely for *"color"*) stalls dialog if the customer prioritizes a different attribute (e.g., *material* or *budget*).
+- We deploy a **Universal Probing** strategy by setting `ask_attribute = "other"` during exploratory turns (Turns 1–4).
+- Under the benchmark specification, this prompts the simulated customer to disclose up to two of their highest-priority remaining hard and soft constraints, rapidly narrowing the candidate pool and driving **Mean Turns to Conversion (MTTC) to 2.895 turns**.
 
-### Stage 3: Weighted In-Memory SQLite FTS5 Retrieval
-- Instead of heavyweight vector databases with embedding latencies, we index the full product catalog into an in-memory **SQLite FTS5 virtual table** with `unicode61` tokenization.
-- We utilize multi-field BM25 ranking with tuned column weights to prioritize high-signal product fields:
+#### Stage 3: High-Performance SQLite FTS5 Retrieval
+- Instead of relying on heavy vector database indexing and embedding model latency, the catalog is indexed into an in-memory **SQLite FTS5 virtual table** with `unicode61 remove_diacritics 2` tokenization upon initialization.
+- Ranked using SQLite's native multi-field BM25 algorithm with tuned column weightings:
 
-| Column Field | FTS5 BM25 Weight | Rationale |
+| Column Field | FTS5 BM25 Weight | Engineering Rationale |
 | :--- | :---: | :--- |
 | **Title** | `12.0` | Primary product identifier and headline intent match |
-| **Category** | `12.0` | Eliminates cross-category false positives |
-| **Features** | `9.0` | Captures key attributes (material, fit, waterproof, etc.) |
-| **Details** | `2.0` | Technical specifications, dimensions, and metadata |
-| **Store** | `1.0` | Brand and storefront matching |
-| **Description** | `1.0` | Broad contextual and semantic descriptions |
+| **Category** | `12.0` | Eliminates cross-category false positives and enforces taxonomy |
+| **Features** | `9.0` | Captures key attributes (material, fit, waterproofing, ergonomics) |
+| **Details** | `2.0` | Matches technical specifications, dimensions, and metadata |
+| **Store** | `1.0` | Supports brand and storefront matching |
+| **Description** | `1.0` | Captures broad contextual keywords without diluting top rank |
 
 ---
 
-## 2. Setup and Installation
+## 2. Setup & Execution Instructions
 
 ### Prerequisites
 - **Python**: `>= 3.12`
 - **Node.js**: `>= 18.0`
-- **uv**: Fast Python package installer (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+- **uv**: Modern, high-performance Python package manager ([Install uv](https://docs.astral.sh/uv/getting-started/installation/))
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
 
-### Step 1: Clone and Place Catalog Dataset
-Ensure the catalog and evaluation datasets are placed inside the `data/` directory at the repository root:
-```bash
-# Ensure catalog and benchmark dataset exist in data/
-mkdir -p data
-# Place catalog.jsonl and public_set.jsonl in data/
-# data/catalog.jsonl
-# data/public_set.jsonl
-```
+### Datasets
+The required catalog and benchmark evaluation sets are **pre-packaged** in the repository:
+- `data/catalog.jsonl` — Full e-commerce product catalog
+- `data/public_set.jsonl` — 200 public test benchmark sessions
 
 ---
 
-### Step 2: Running the Application & Evaluation
+### Environment Configuration (Optional)
+To enable optional remote LLM fallback integration (OpenAI, Ollama, or custom OpenAI-compatible endpoints), copy `.env.example` to `.env` in the repository root:
+```bash
+cp .env.example .env
+```
+Contents of `.env.example`:
+```env
+# Optional: OpenAI-compatible LLM endpoint for fallback slot extraction
+API_KEY="your-api-key"
+BASE_URL="https://api.openai.com/v1"
+MODEL="llama3.1:8b"
+```
+> **Note**: The core FTS5 retrieval engine and deterministic state machine run 100% offline out-of-the-box without requiring API keys or active internet access.
 
-We provide two self-contained, `uv`-managed root scripts:
+---
 
-#### Option A: Run Official Benchmark Evaluation (`run_eval.sh`)
-Executes the headless benchmark against the 200 public test sessions using `uv` and the backend Python environment:
+### Execution Commands
+
+#### 1. Headless Benchmark Evaluation (`./run_eval.sh`)
+Runs the official benchmark against all 200 public test sessions using `uv` and the backend environment:
 ```bash
 chmod +x run_eval.sh
 ./run_eval.sh --catalog data/catalog.jsonl --dataset data/public_set.jsonl
 ```
-> Outputs detailed metrics to stdout and writes full session traces to `results.json`.
+- Automatically syncs backend virtualenv dependencies via `uv`.
+- Evaluates from the project root to guarantee standard module resolution (`evaluator.*`, `starter.*`).
+- Prints summary statistics to stdout and writes full per-session traces to `results.json`.
 
-#### Option B: Boot Interactive Demo Environment (`start.sh`)
-Launches the FastAPI backend (`http://localhost:8000`) and the Vite React frontend (`http://localhost:3000`) concurrently with clean signal handling:
+#### 2. Interactive Full-Stack Demo (`./start.sh`)
+Launches the FastAPI backend and Vite React frontend concurrently with integrated signal trapping:
 ```bash
 chmod +x start.sh
 ./start.sh
 ```
-
-- **Frontend UI / Copilot Playground**: `http://localhost:3000`
-- **Backend API & Swagger Docs**: `http://localhost:8000/docs`
+- **Frontend Dashboard**: [http://localhost:3000](http://localhost:3000) (Defaults to the **Copilot Playground** dual-pane Chat + State Inspector view)
+- **Backend API & Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 - Press `Ctrl+C` in the terminal to cleanly terminate both processes.
 
 ---
 
-## 3. Reproducibility & Benchmark Results
+## 3. Verified Benchmark Results
 
-Our system was evaluated using the official `evaluator.local_evaluator` benchmark over **200 public test sessions** spanning 4 dialogue scenarios (`boundary`, `browsing`, `buying`, `intent_override`).
+The benchmark was executed using the official `evaluator.local_evaluator` on the 200 public test cases. The exact recorded metrics from [`results.json`](results.json) are:
 
 ### Overall Benchmark Metrics
 
-| Metric | Target / Baseline | Our Copilot Result |
-| :--- | :---: | :---: |
-| **Hit Rate@10** | `0.50` | **`0.9400` (94.0%)** |
-| **MRR (Mean Reciprocal Rank)** | `0.30` | **`0.6407`** |
-| **MTTC (Mean Turns to Conversion)** | `5.00` | **`2.8950` turns** |
-| **Efficiency Score** | — | **`0.8105`** |
-| **Recommended Technical Score** | — | **`0.8243`** |
-| **Total Token Consumption** | — | **`41,829` tokens (~42k)** |
+| Metric | Target / Starter Baseline | Our Verified Result | Status |
+| :--- | :---: | :---: | :---: |
+| **Hit Rate@10** | `0.5000` | **`0.9400` (94.0%)** | 🟢 **+44.0% over target** |
+| **MRR (Mean Reciprocal Rank)** | `0.3000` | **`0.6407`** | 🟢 **+0.3407 over target** |
+| **MTTC (Mean Turns to Conversion)** | `5.0000` | **`2.8950` turns** | 🟢 **-2.105 turns faster** |
+| **Efficiency Score** | — | **`0.8105`** | 🟢 **High convergence** |
+| **Recommended Technical Score** | — | **`0.8243`** | 🟢 **Top-tier performance** |
+| **Total Reported Token Usage** | — | **`41,829` tokens** | 🟢 **~209 tokens / session** |
 
 ### Scenario Breakdown
 
 | Scenario Type | Sample Count | Hit Rate@10 | MRR | MTTC |
 | :--- | :---: | :---: | :---: | :---: |
-| **Boundary** | 10 | `1.0000` (100%) | `0.8310` | `3.30` turns |
-| **Browsing** | 80 | `0.9625` (96.25%) | `0.6095` | `2.61` turns |
-| **Buying** | 80 | `0.9250` (92.50%) | `0.6227` | `2.53` turns |
-| **Intent Override** | 30 | `0.9000` (90.00%) | `0.7082` | `4.50` turns |
+| **Boundary** | 10 | **`1.0000` (100.0%)** | **`0.8310`** | **`3.3000` turns** |
+| **Browsing** | 80 | **`0.9625` (96.25%)** | **`0.6095`** | **`2.6125` turns** |
+| **Buying** | 80 | **`0.9250` (92.50%)** | **`0.6227`** | **`2.5250` turns** |
+| **Intent Override** | 30 | **`0.9000` (90.00%)** | **`0.7082`** | **`4.5000` turns** |
 
 ---
 
-## 4. Limitations & Future Work
+## 4. Engineering Tradeoffs & Limitations
 
-While our weighted FTS5 architecture delivers exceptional speed, high MRR, and low token cost, we note the following engineering tradeoffs:
+### Current Tradeoffs
+1. **Lexical Dependence of BM25**:
+   - SQLite FTS5 relies on exact token matching, stemming, and token proximity. While tuned column weighting resolves structural and categorical mismatches, it lacks semantic embedding alignment for non-overlapping synonyms (e.g., query *"summer apparel"* vs. catalog item *"warm weather linen shirt"*).
+2. **Deterministic Probing Heuristic**:
+   - While `ask_attribute = "other"` maximally accelerates constraint acquisition on the benchmark simulator, real human shoppers occasionally benefit from category-specific multiple-choice prompts (e.g., offering specific style tags).
 
-1. **Exact-Token & Lexical Dependency**:
-   - SQLite FTS5 relies on BM25 token matching and stem/prefix heuristics. It lacks dense semantic understanding for non-overlapping synonyms (e.g., mapping *"summer apparel"* to *"warm weather outfits"* or *"rainproof"* to *"water repellent"* when exact tokens are absent).
-2. **Proposed Future Enhancement — Two-Stage Semantic Hybrid**:
-   - **Stage 1 (Retrieval)**: Use FTS5 BM25 to retrieve a top-50 candidate pool in `< 2ms`.
-   - **Stage 2 (Reranking)**: Apply a lightweight, quantized Cross-Encoder or MiniLM embedding model solely over the top-50 candidates. This adds deep semantic relevance without inflating latency or token overhead.
-3. **Dynamic Entropy-Based Attribute Branching**:
-   - Extend the universal probe with Shannon entropy scoring across candidate attributes to dynamically select between `"other"`, category-specific narrowing, or price-range clustering when candidate variance is exceptionally high.
+### Proposed Future Work: Two-Stage Semantic Hybrid
+Given additional engineering time, we propose extending the engine with a **Two-Stage Semantic Hybrid Retrieval Pipeline**:
+1. **Stage 1 (High-Recall Candidate Retrieval)**:
+   - Use in-memory SQLite FTS5 to retrieve the Top-50 candidates in `< 2ms` with zero embedding overhead.
+2. **Stage 2 (Quantized Cross-Encoder Reranking)**:
+   - Execute a quantized, local cross-encoder (e.g., `ms-marco-MiniLM-L-6-v2` ONNX runtime) over the Top-50 candidates.
+   - Computes query-document cross-attention only on the pre-filtered pool, adding semantic synonym matching while preserving sub-15ms response times.
 
 ---
 
@@ -163,19 +228,19 @@ While our weighted FTS5 architecture delivers exceptional speed, high MRR, and l
 
 ### Technology Stack
 
-| Layer | Technology | Purpose |
+| Layer | Component | Description |
 | :--- | :--- | :--- |
-| **Language & Runtime** | Python 3.12, Node.js 18+ | Backend and Frontend environments |
-| **Package Management** | `uv`, `npm` | Deterministic, fast virtualenv and dependency sync |
-| **Backend Framework** | FastAPI, Uvicorn | Async REST API endpoints |
+| **Runtime & Language** | Python 3.12, Node.js 18+ | Core agent runtime and frontend environment |
+| **Dependency Management** | `uv`, `npm` | Deterministic, ultra-fast virtualenv and package sync |
+| **Backend API** | FastAPI, Uvicorn | High-throughput asynchronous REST API |
 | **Search Engine** | SQLite FTS5 (In-Memory) | Weighted multi-field BM25 candidate retrieval |
-| **Database & ORM** | Prisma Client Python, SQLite | Session, state snapshot, and user profile persistence |
-| **LLM & Orchestration** | LangChain, LangChain-OpenAI / Ollama | Slot extraction and intent override fallback |
-| **Frontend Framework** | React 18, Vite | Interactive UI and real-time state inspection |
-| **Styling & Icons** | Tailwind CSS, Lucide React | Glassmorphic design and responsive components |
+| **ORM & Persistence** | Prisma Client Python, SQLite | Session, state snapshot, and user profile persistence |
+| **LLM & Agent Framework** | LangChain, LangChain-OpenAI / Ollama | Optional slot extraction & fallback reasoning |
+| **Frontend Framework** | React 18, Vite | Dual-pane Copilot Playground & Developer Inspector |
+| **UI Design System** | Tailwind CSS, Lucide React | Glassmorphic dark/light UI and state visualization |
 
 ### Team Members
-- **[Team Member 1]** — [Role / GitHub]
-- **[Team Member 2]** — [Role / GitHub]
-- **[Team Member 3]** — [Role / GitHub]
-- **[Team Member 4]** — [Role / GitHub]
+- **[Team Member 1]** — [Role / GitHub Profile]
+- **[Team Member 2]** — [Role / GitHub Profile]
+- **[Team Member 3]** — [Role / GitHub Profile]
+- **[Team Member 4]** — [Role / GitHub Profile]

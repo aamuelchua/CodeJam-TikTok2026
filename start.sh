@@ -75,10 +75,10 @@ log "Running prisma db push…"
 prisma db push --schema="$BACKEND_DIR/schema.prisma" --accept-data-loss
 
 # ── 4. Check .env exists ────────────────────────────────────
-if [ ! -f "$BACKEND_DIR/.env" ]; then
-  warn ".env not found in backend/. Copying from .env.example…"
-  cp "$BACKEND_DIR/.env.example" "$BACKEND_DIR/.env"
-  warn "Please edit backend/.env and set your API_KEY before restarting."
+if [ ! -f "$ROOT/.env" ] && [ ! -f "$BACKEND_DIR/.env" ]; then
+  warn ".env not found. Copying from .env.example…"
+  cp "$ROOT/.env.example" "$ROOT/.env"
+  warn "Please edit .env and configure your API_KEY if using an external LLM."
 fi
 
 # ── 5. Frontend: npm install ────────────────────────────────

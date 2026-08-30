@@ -75,9 +75,14 @@ def get_llm():
             from langchain_openai import ChatOpenAI
             from dotenv import load_dotenv
 
-            env_path = Path(ROOT_DIR) / "backend" / ".env"
-            if env_path.exists():
-                load_dotenv(dotenv_path=env_path, override=False)
+            root_env = Path(ROOT_DIR) / ".env"
+            backend_env = Path(ROOT_DIR) / "backend" / ".env"
+            if root_env.exists():
+                load_dotenv(dotenv_path=root_env, override=False)
+            elif backend_env.exists():
+                load_dotenv(dotenv_path=backend_env, override=False)
+            else:
+                load_dotenv(override=False)
 
             api_key = os.environ.get("API_KEY")
             base_url = os.environ.get("BASE_URL")
