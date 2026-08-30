@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any
 from starter.rag_pipeline import (
     RAGPipeline,
+    DEFAULT_CATALOG_PATH,
     detect_intent,
     process_rag_turn,
     get_vectorstore,
@@ -21,7 +22,7 @@ class Agent:
     Delegates pipeline execution directly to starter.rag_pipeline.RAGPipeline.
     """
 
-    def __init__(self, catalog_path: str | Path = "data/catalog.jsonl") -> None:
+    def __init__(self, catalog_path: str | Path = DEFAULT_CATALOG_PATH) -> None:
         self.pipeline = RAGPipeline(catalog_path=catalog_path)
         self.products = self.pipeline.products
         self.connection = self.pipeline.connection
@@ -41,6 +42,7 @@ class Agent:
 
 __all__ = [
     "Agent",
+    "DEFAULT_CATALOG_PATH",
     "detect_intent",
     "process_rag_turn",
     "get_vectorstore",

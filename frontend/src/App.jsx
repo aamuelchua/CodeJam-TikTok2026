@@ -36,7 +36,7 @@ const DESKTOP_CATEGORIES = [
 
 function MainContent() {
   const { theme, toggleTheme } = useTheme()
-  const [activeTab, setActiveTab] = useState('shop')
+  const [activeTab, setActiveTab] = useState('copilot')
   const [selectedCategory, setSelectedCategory] = useState('All')
 
   // Floating & Pinned Copilot State
@@ -189,27 +189,31 @@ function MainContent() {
   }, [])
 
   const handleTurnResult = useCallback((result) => {
-    if (result.state) setSessionState(result.state)
-    if (result.products && result.products.length > 0) {
-      setProducts((prev) => {
-        const existingAsins = new Set(prev.map((p) => p.asin))
-        const newProducts = result.products.filter((p) => !existingAsins.has(p.asin))
-        return [...newProducts, ...prev]
-      })
-    }
+    if (!result) return
+    try {
+      if (result.state) setSessionState(result.state)
+      const incoming = result.products || result.recommendations
+      if (incoming && Array.isArray(incoming) && incoming.length > 0) {
+        setProducts(incoming)
+        setSelectedCategory('All')
+      }
 
-    // Capture derived interests from RAG response
-    if (result.derivedInterests && result.derivedInterests.length > 0 && userProfile) {
-      setUserProfile((prev) => {
-        if (!prev) return prev
-        const updatedDerived = Array.from(new Set([...(prev.derivedInterests || []), ...result.derivedInterests]))
-        const updatedProfile = { ...prev, derivedInterests: updatedDerived }
-        localStorage.setItem('shopping_copilot_profile', JSON.stringify(updatedProfile))
-        if (prev.email) {
-          axios.put(`${API}/users/${prev.email}`, { derived_interests: updatedDerived }).catch(() => {})
+      // Capture derived interests from RAG response
+      if (result.derivedInterests && Array.isArray(result.derivedInterests) && result.derivedInterests.length > 0 && userProfile) {
+        try {
+          const updatedDerived = Array.from(new Set([...(userProfile.derivedInterests || []), ...result.derivedInterests]))
+          const updatedProfile = { ...userProfile, derivedInterests: updatedDerived }
+          setUserProfile(updatedProfile)
+          localStorage.setItem('shopping_copilot_profile', JSON.stringify(updatedProfile))
+          if (userProfile.email) {
+            axios.put(`${API}/users/${userProfile.email}`, { derived_interests: updatedDerived }).catch(() => {})
+          }
+        } catch (profileErr) {
+          console.warn('Non-critical profile sync error:', profileErr)
         }
-        return updatedProfile
-      })
+      }
+    } catch (err) {
+      console.warn('Error in handleTurnResult:', err)
     }
   }, [userProfile])
 

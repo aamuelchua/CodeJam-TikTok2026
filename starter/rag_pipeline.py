@@ -21,9 +21,11 @@ from pathlib import Path
 from typing import Any
 
 # Ensure project root is in sys.path
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if ROOT_DIR not in sys.path:
-    sys.path.insert(0, ROOT_DIR)
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
+
+DEFAULT_CATALOG_PATH = ROOT_DIR / "data" / "catalog.jsonl"
 
 TOKEN_RE = re.compile(r"[a-z0-9]+", re.IGNORECASE)
 STOPWORDS = {
@@ -102,8 +104,13 @@ class RAGPipeline:
     and in-memory multi-field BM25/FTS candidate retrieval.
     """
 
-    def __init__(self, catalog_path: str | Path = "data/catalog.jsonl") -> None:
-        self.catalog_path = Path(catalog_path)
+    def __init__(self, catalog_path: str | Path = DEFAULT_CATALOG_PATH) -> None:
+        p = Path(catalog_path)
+        if not p.exists() and not p.is_absolute():
+            fallback = ROOT_DIR / p
+            if fallback.exists():
+                p = fallback
+        self.catalog_path = p
         self.connection = sqlite3.connect(":memory:")
         self.products: list[dict] = []
         self._sessions: dict[str, dict] = {}
