@@ -6,9 +6,9 @@
   "efficiency": 0.8105,
   "recommended_technical_score": 0.824301,
   "reported_token_usage": {
-    "prompt_tokens": 30245,
-    "completion_tokens": 11859,
-    "total_tokens": 42104
+    "prompt_tokens": 30174,
+    "completion_tokens": 11655,
+    "total_tokens": 41829
   },
   "scenario_metrics": {
     "boundary": {
