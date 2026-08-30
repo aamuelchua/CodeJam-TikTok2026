@@ -1,0 +1,50 @@
+[
+  {
+    "Dataset": "Public Set (Baseline)",
+    "Hit Rate@10": 0.98,
+    "MRR": 0.728522,
+    "MTTC": 2.29,
+    "Efficiency": 0.871,
+    "Technical Score": 0.882757
+  },
+  {
+    "Dataset": "Set 1: Standard (Seed 101)",
+    "Hit Rate@10": 0.965,
+    "MRR": 0.705304,
+    "MTTC": 2.505,
+    "Efficiency": 0.8495,
+    "Technical Score": 0.863991
+  },
+  {
+    "Dataset": "Set 2: Standard (Seed 202)",
+    "Hit Rate@10": 0.945,
+    "MRR": 0.696026,
+    "MTTC": 2.705,
+    "Efficiency": 0.8295,
+    "Technical Score": 0.847208
+  },
+  {
+    "Dataset": "Set 3: Buying-Heavy",
+    "Hit Rate@10": 0.93,
+    "MRR": 0.638181,
+    "MTTC": 2.695,
+    "Efficiency": 0.8305,
+    "Technical Score": 0.822554
+  },
+  {
+    "Dataset": "Set 4: Browsing-Heavy",
+    "Hit Rate@10": 0.95,
+    "MRR": 0.688952,
+    "MTTC": 2.755,
+    "Efficiency": 0.8245,
+    "Technical Score": 0.846586
+  },
+  {
+    "Dataset": "Set 5: Override-Heavy",
+    "Hit Rate@10": 0.98,
+    "MRR": 0.760938,
+    "MTTC": 2.895,
+    "Efficiency": 0.8105,
+    "Technical Score": 0.880381
+  }
+]
