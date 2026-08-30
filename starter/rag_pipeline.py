@@ -87,9 +87,9 @@ def get_llm():
             else:
                 load_dotenv(override=False)
 
-            api_key = os.environ.get("API_KEY")
-            base_url = os.environ.get("BASE_URL")
-            model = os.environ.get("MODEL", "llama3.1:8b").strip('"').strip("'")
+            api_key = os.environ.get("ARK_API_KEY") or os.environ.get("API_KEY")
+            base_url = os.environ.get("ARK_BASE_URL") or os.environ.get("BASE_URL")
+            model = (os.environ.get("ARK_MODEL") or os.environ.get("MODEL") or "llama3.1:8b").strip('"').strip("'")
 
             if api_key and base_url:
                 _llm_singleton = ChatOpenAI(
