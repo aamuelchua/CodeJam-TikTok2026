@@ -239,18 +239,26 @@ export default function ChatPlayground({
 
       const { data } = await axios.post(`${API}/sessions/${sessionId}/turn`, payload)
 
+      const turnProducts = data.products || data.recommendations || []
+
       appendMessage({
         sender: 'AGENT',
         content: data.agentMessage,
         shouldClarify: data.shouldClarify,
-        products: data.products || [],
+        products: turnProducts,
         meta: {
           candidateCount: data.candidateCount,
           entropyScore: data.entropyScore,
         },
       })
 
-      onTurnResult(data)
+      if (typeof onTurnResult === 'function') {
+        try {
+          onTurnResult(data)
+        } catch (callbackErr) {
+          console.warn('Non-critical onTurnResult callback error:', callbackErr)
+        }
+      }
     } catch (err) {
       const msg = err.response?.data?.detail || 'Something went wrong. Please try again.'
       setError(msg)

@@ -20,6 +20,7 @@ from starter.agent import (
     load_full_catalog,
     get_bm25_index,
     detect_intent,
+    DEFAULT_CATALOG_PATH,
 )
 
 __all__ = [
@@ -30,4 +31,5 @@ __all__ = [
     "load_full_catalog",
     "get_bm25_index",
     "detect_intent",
+    "DEFAULT_CATALOG_PATH",
 ]

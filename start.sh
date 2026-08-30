@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ============================================================
 #  Shopping Copilot — Root Startup Script
-#  Starts the FastAPI backend and Vite frontend in parallel.
+#  Starts the FastAPI backend (via uv) and Vite frontend
+#  concurrently, with clean signal trapping.
 #
 #  Usage:
 #    chmod +x start.sh
@@ -26,49 +27,45 @@ ok()   { echo -e "${GREEN}[start.sh]${NC} $*"; }
 warn() { echo -e "${YELLOW}[start.sh]${NC} $*"; }
 err()  { echo -e "${RED}[start.sh]${NC} $*" >&2; }
 
-# ── Trap: kill child processes on Ctrl-C ───────────────────
+# ── Trap: kill child processes on Ctrl-C / TERM ────────────
 BACKEND_PID=""
 FRONTEND_PID=""
 
 cleanup() {
   warn "Shutting down…"
+  # Send SIGTERM to child processes
   [ -n "$BACKEND_PID" ]  && kill "$BACKEND_PID"  2>/dev/null || true
   [ -n "$FRONTEND_PID" ] && kill "$FRONTEND_PID" 2>/dev/null || true
+  # Wait for graceful shutdown
   [ -n "$BACKEND_PID" ]  && wait "$BACKEND_PID"  2>/dev/null || true
   [ -n "$FRONTEND_PID" ] && wait "$FRONTEND_PID" 2>/dev/null || true
-  ok "Done."
+  ok "All processes stopped. Goodbye."
 }
 trap cleanup INT TERM
 
 # ── 1. Check required tools ────────────────────────────────
-for cmd in python3 node npm uv; do
+for cmd in node npm uv; do
   if ! command -v "$cmd" &>/dev/null; then
     err "Required tool not found: $cmd"
     exit 1
   fi
 done
 
-# ── 2. Backend: virtual-env & deps ─────────────────────────
+# ── 2. Backend: virtualenv & deps via uv ───────────────────
 log "Setting up backend…"
 cd "$BACKEND_DIR"
 
 if [ ! -d ".venv" ]; then
   log "Creating Python virtual environment (Python 3.12) using uv…"
   uv venv --python 3.12
-else
-  if ! "$BACKEND_DIR/.venv/bin/python" --version 2>&1 | grep -q "3.12"; then
-    log "Existing virtual environment is not Python 3.12. Recreating with Python 3.12…"
-    rm -rf .venv
-    uv venv --python 3.12
-  fi
 fi
 
-# Activate venv
+log "Installing Python dependencies with uv…"
+uv pip install -r requirements.txt --quiet
+
+# Activate virtual environment so virtualenv bin (prisma, prisma-client-py, python) is in PATH
 # shellcheck source=/dev/null
 source "$BACKEND_DIR/.venv/bin/activate"
-
-log "Installing Python dependencies with uv…"
-uv pip install -r requirements.txt
 
 # ── 3. Prisma: generate client + push schema ───────────────
 log "Running prisma generate…"
@@ -78,10 +75,10 @@ log "Running prisma db push…"
 prisma db push --schema="$BACKEND_DIR/schema.prisma" --accept-data-loss
 
 # ── 4. Check .env exists ────────────────────────────────────
-if [ ! -f "$BACKEND_DIR/.env" ]; then
-  warn ".env not found in backend/. Copying from .env.example…"
-  cp "$BACKEND_DIR/.env.example" "$BACKEND_DIR/.env"
-  warn "Please edit backend/.env and set your API_KEY before restarting."
+if [ ! -f "$ROOT/.env" ] && [ ! -f "$BACKEND_DIR/.env" ]; then
+  warn ".env not found. Copying from .env.example…"
+  cp "$ROOT/.env.example" "$ROOT/.env"
+  warn "Please edit .env and configure your API_KEY if using an external LLM."
 fi
 
 # ── 5. Frontend: npm install ────────────────────────────────
@@ -95,7 +92,7 @@ fi
 # ── 6. Launch backend ───────────────────────────────────────
 log "Starting FastAPI backend on http://localhost:8000 …"
 cd "$BACKEND_DIR"
-python run.py &
+"$BACKEND_DIR/.venv/bin/python" run.py &
 BACKEND_PID=$!
 ok "Backend PID: $BACKEND_PID"
 
@@ -109,7 +106,6 @@ npm run dev &
 FRONTEND_PID=$!
 ok "Frontend PID: $FRONTEND_PID"
 
-# ── 8. Summary ──────────────────────────────────────────────
 echo ""
 ok "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 ok " 🛒  Shopping Copilot is running!"
@@ -122,5 +118,5 @@ ok "   Press Ctrl-C to stop both services."
 ok "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
 
-# Wait for both processes
+# Wait for both processes — if either exits, the other will be cleaned up by the trap
 wait "$BACKEND_PID" "$FRONTEND_PID"

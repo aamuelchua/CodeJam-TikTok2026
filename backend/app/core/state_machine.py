@@ -30,13 +30,19 @@ from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage, SystemMessage
 
-# Load .env from the backend/ directory (one level up from app/)
-_ENV_PATH = Path(__file__).resolve().parents[2] / ".env"
-load_dotenv(dotenv_path=_ENV_PATH, override=False)
+# Load .env from the repository root (fallback to backend/.env)
+_ROOT_ENV = Path(__file__).resolve().parents[3] / ".env"
+_BACKEND_ENV = Path(__file__).resolve().parents[2] / ".env"
+if _ROOT_ENV.exists():
+    load_dotenv(dotenv_path=_ROOT_ENV, override=False)
+elif _BACKEND_ENV.exists():
+    load_dotenv(dotenv_path=_BACKEND_ENV, override=False)
+else:
+    load_dotenv(override=False)
 
-_API_KEY: str = os.environ["API_KEY"]
+_API_KEY: str = os.environ.get("API_KEY", "")
 _MODEL: str = os.environ.get("MODEL", "llama3.1:8b").strip('"').strip("'")
-_BASE_URL: str = os.environ["BASE_URL"].rstrip("/")
+_BASE_URL: str = os.environ.get("BASE_URL", "https://api.openai.com/v1").rstrip("/")
 
 _SYSTEM_INSTRUCTION = """\
 You are a shopping assistant slot extractor. Given the conversation history and the latest user message, \

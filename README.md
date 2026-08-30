@@ -1,178 +1,246 @@
-# 🛒 Shopping Copilot — Entropy-Driven Conversational Commerce
+# 🛒 Shopping Copilot — High-Performance Conversational Commerce
 
-An **Active State-Machine Agent** for e-commerce search and recommendation built for the **CodeJam / TechJam 2026 Hackathon**.  
-It features **Dual-Track Intent Routing**, **LLM Slot Tracking & Intent Override**, **BM25 + FAISS Dense Embedding Reciprocal Rank Fusion (RRF)**, **Entropy-based Clarification Triggers**, and **Cross-Encoder Reranking**.
+An active **State-Machine RAG Agent** for conversational e-commerce product discovery, slot tracking, and multi-turn recommendation built for the **CodeJam / TechJam 2026 Hackathon**.
 
-> 📖 **Full Pipeline Documentation**: Detailed architectural breakdown, mathematical formulation, and sub-component specs are available in [`docs/rag_pipeline.md`](docs/rag_pipeline.md).
-
----
-
-## 📊 Benchmark Performance & Results
-
-Evaluated using the official local benchmark dataset of **200 public test sessions**:
-
-| Metric | Baseline Starter Agent | Our Implemented RAG Pipeline | Absolute Improvement |
-| :--- | :---: | :---: | :---: |
-| **Hit Rate@10** | `0.1250` (12.5%) | **`0.9950` (99.50%)** | **+87.00%** |
-| **MRR (Mean Reciprocal Rank)** | `0.0680` (6.8%) | **`0.9875` (98.75%)** | **+91.95%** |
-| **MTTC (Mean Turns to Conversion)** | `9.81` turns | **`1.05` turns** | **-8.76 turns** |
-| **Efficiency Score** | `0.1190` (11.9%) | **`0.9950` (99.50%)** | **+87.60%** |
-| **Technical Score** | `0.1066` (10.66%) | **`0.9928` (99.28%)** | **+88.62%** |
-| **Total Evaluation Time** | — | **`45.92` seconds** | **~0.23s / session** |
+Our solution delivers sub-millisecond retrieval latencies, high conversational precision, and conservative token consumption through a **dual-execution architecture** powered by an **in-memory SQLite FTS5 multi-field BM25 retrieval engine**, a **fast-path regex state machine with LLM fallback**, and a **universal probing strategy**.
 
 ---
 
-## 🚀 Quick Start
+## 1. Executive Summary & System Architecture
+
+### Dual Execution Paths
+
+The repository provides two synchronized execution environments sharing the core `starter.agent.Agent` runtime:
+
+1. **Headless Benchmark Engine (`evaluator.local_evaluator`)**:
+   - Direct, high-throughput in-process Python execution (`evaluator/local_evaluator.py` $\rightarrow$ `starter/agent.py` $\rightarrow$ `starter/rag_pipeline.py`).
+   - Zero HTTP or networking overhead, evaluating 200 multi-turn test sessions in seconds.
+2. **Interactive Full-Stack Demo (FastAPI + React 18 + Vite)**:
+   - Real-time developer playground featuring a dual-pane **Conversational Copilot** and **State Inspector**.
+   - Visualizes live slot state (`intentTrack`, `hardFilters`, `negativeFilters`, `softPreferences`), real-time token telemetry, and ranked product metadata cards.
+
+```
+═════════════════════════════════════════════════════════════════════════════════
+                         DUAL EXECUTION ARCHITECTURE
+═════════════════════════════════════════════════════════════════════════════════
+
+  [Headless Benchmark Path]                     [Interactive Full-Stack Path]
+    ./run_eval.sh                                  ./start.sh
+         │                                              │
+         ▼                                              ▼
+  evaluator/local_evaluator.py                 React 18 Frontend (Vite)
+         │                                     (Chat & State Inspector UI)
+         │                                              │  HTTP /api/sessions/turn
+         │                                              ▼
+         │                                     FastAPI Backend (routes.py)
+         │                                              │
+         └──────────────────────┬───────────────────────┘
+                                │
+                                ▼
+                    starter/agent.py (Agent)
+                                │
+                                ▼
+                  starter/rag_pipeline.py (RAG)
+                                │
+    ┌───────────────────────────┼───────────────────────────┐
+    ▼                           ▼                           ▼
+[Stage 1: Intent & State]  [Stage 2: Universal Probe]  [Stage 3: SQLite FTS5]
+ • Fast-path Regex           • ask_attribute="other"     • Multi-field BM25
+ • Slot Erasure (Override)   • Rapid MTTC convergence   • In-memory Catalog
+ • Selective LLM Fallback                                • Custom Column Weights
+                                │
+                                ▼
+                   Top-10 Recommended Products
+═════════════════════════════════════════════════════════════════════════════════
+```
+
+---
+
+### 3-Stage RAG Pipeline Design
+
+```
+                      ┌─────────────────────────────────────────┐
+                      │            User Chat Turn               │
+                      └────────────────────┬────────────────────┘
+                                           │
+                                           ▼
+             ┌───────────────────────────────────────────────────────────┐
+             │ Stage 1: Intent Routing & Hybrid State Machine           │
+             │                                                           │
+             │  • Deterministic Fast-Path Regex (Category, Constraints)  │
+             │  • Dynamic Intent Override & Invalidation Slot Erasure    │
+             │  • Optional LLM Fallback (OpenAI-compatible / Offline)    │
+             └─────────────────────────────┬─────────────────────────────┘
+                                           │
+                                           ▼
+             ┌───────────────────────────────────────────────────────────┐
+             │ Stage 2: Universal Probing Strategy                      │
+             │                                                           │
+             │  • Dynamic Probing: ask_attribute = "other"               │
+             │  • Unlocks Highest-Priority Remaining User Constraints   │
+             │  • Drives MTTC down to 2.895 Turns                        │
+             └─────────────────────────────┬─────────────────────────────┘
+                                           │
+                                           ▼
+             ┌───────────────────────────────────────────────────────────┐
+             │ Stage 3: High-Performance SQLite FTS5 Retrieval          │
+             │                                                           │
+             │  • In-Memory Virtual Table with unicode61 Tokenizer       │
+             │  • Tuned BM25 Multi-Field Column Weights:                 │
+             │    Title: 12.0 | Category: 12.0 | Features: 9.0           │
+             │    Details: 2.0 | Store: 1.0 | Description: 1.0           │
+             └─────────────────────────────┬─────────────────────────────┘
+                                           │
+                                           ▼
+                      ┌─────────────────────────────────────────┐
+                      │   Top-10 Ranked Products + Telemetry    │
+                      └─────────────────────────────────────────┘
+```
+
+#### Stage 1: Intent Routing & State Machine
+- **Dual-Track Intent Routing**: Detects conversational orientation (`BUYING` for targeted constraints vs. `BROWSING` for exploratory discovery).
+- **Fast-Path Regex Slot Extraction**: Extracts product categories, explicit constraints (`key requirement is:`, `what matters is:`), and price boundaries deterministically with zero latency.
+- **Intent Override & Slot Erasure**: When a customer changes their mind (e.g., *"Actually, ignore my earlier preference. What I need is..."*), the state machine identifies the negation, removes invalidated prior constraints (`sess["initial_pref"]`), and isolates the replacement requirement.
+- **Selective LLM Fallback**: An optional OpenAI-compatible LLM (`llama3.1:8b` via LangChain) can be invoked for deep conversational reasoning on ambiguous turns, while offline regex guarantees deterministic fallback. Total token consumption across all 200 evaluation sessions remains capped at **~42k tokens** (~210 tokens/session).
+
+#### Stage 2: Universal Probing (`ask_attribute = "other"`)
+- In multi-turn commerce interactions, asking rigid single-attribute questions (e.g., prompting solely for *"color"*) stalls dialog if the customer prioritizes a different attribute (e.g., *material* or *budget*).
+- We deploy a **Universal Probing** strategy by setting `ask_attribute = "other"` during exploratory turns (Turns 1–4).
+- Under the benchmark specification, this prompts the simulated customer to disclose up to two of their highest-priority remaining hard and soft constraints, rapidly narrowing the candidate pool and driving **Mean Turns to Conversion (MTTC) to 2.895 turns**.
+
+#### Stage 3: High-Performance SQLite FTS5 Retrieval
+- Instead of relying on heavy vector database indexing and embedding model latency, the catalog is indexed into an in-memory **SQLite FTS5 virtual table** with `unicode61 remove_diacritics 2` tokenization upon initialization.
+- Ranked using SQLite's native multi-field BM25 algorithm with tuned column weightings:
+
+| Column Field | FTS5 BM25 Weight | Engineering Rationale |
+| :--- | :---: | :--- |
+| **Title** | `12.0` | Primary product identifier and headline intent match |
+| **Category** | `12.0` | Eliminates cross-category false positives and enforces taxonomy |
+| **Features** | `9.0` | Captures key attributes (material, fit, waterproofing, ergonomics) |
+| **Details** | `2.0` | Matches technical specifications, dimensions, and metadata |
+| **Store** | `1.0` | Supports brand and storefront matching |
+| **Description** | `1.0` | Captures broad contextual keywords without diluting top rank |
+
+---
+
+## 2. Setup & Execution Instructions
 
 ### Prerequisites
+- **Python**: `>= 3.12`
+- **Node.js**: `>= 18.0`
+- **uv**: Modern, high-performance Python package manager ([Install uv](https://docs.astral.sh/uv/getting-started/installation/))
+  ```bash
+  curl -LsSf https://astral.sh/uv/install.sh | sh
+  ```
 
-| Tool | Version |
-|------|---------|
-| Python | ≥ 3.10 |
-| Node.js | ≥ 18 |
-| Ollama | latest |
+### Datasets
+The required catalog and benchmark evaluation sets are **pre-packaged** in the repository:
+- `data/catalog.jsonl` — Full e-commerce product catalog
+- `data/public_set.jsonl` — 200 public test benchmark sessions
 
-Pull the required Ollama model:
+---
+
+### Environment Configuration (Optional)
+To enable optional remote LLM fallback integration (OpenAI, Ollama, or custom OpenAI-compatible endpoints), copy `.env.example` to `.env` in the repository root:
 ```bash
-ollama pull llama3.1:8b
+cp .env.example .env
 ```
+Contents of `.env.example`:
+```env
+# Optional: OpenAI-compatible LLM endpoint for fallback slot extraction
+API_KEY="your-api-key"
+BASE_URL="https://api.openai.com/v1"
+MODEL="llama3.1:8b"
+```
+> **Note**: The core FTS5 retrieval engine and deterministic state machine run 100% offline out-of-the-box without requiring API keys or active internet access.
 
 ---
 
-### Running Evaluation Benchmark
+### Execution Commands
 
-To execute the local evaluator on the 200 public test sessions:
-
+#### 1. Headless Benchmark Evaluation (`./run_eval.sh`)
+Runs the official benchmark against all 200 public test sessions using `uv` and the backend environment:
 ```bash
-./run_eval.sh
+chmod +x run_eval.sh
+./run_eval.sh --catalog data/catalog.jsonl --dataset data/public_set.jsonl
 ```
+- Automatically syncs backend virtualenv dependencies via `uv`.
+- Evaluates from the project root to guarantee standard module resolution (`evaluator.*`, `starter.*`).
+- Prints summary statistics to stdout and writes full per-session traces to `results.json`.
 
-Results are saved to `results.json`.
-
----
-
-### Backend Setup
-
+#### 2. Interactive Full-Stack Demo (`./start.sh`)
+Launches the FastAPI backend and Vite React frontend concurrently with integrated signal trapping:
 ```bash
-# 1. Navigate to backend
-cd backend
-
-# 2. Create and activate a virtual environment
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-
-# 3. Install Python dependencies
-pip install -r requirements.txt
-
-# 4. Copy the Prisma schema into the app folder
-cp schema.prisma app/schema.prisma
-
-# 5. Generate the Prisma client
-prisma generate --schema=schema.prisma
-
-# 6. Push the schema to create the SQLite database
-prisma db push --schema=schema.prisma
-
-# 7. Start the FastAPI server
-python run.py
+chmod +x start.sh
+./start.sh
 ```
-
-The API will be live at **http://localhost:8000**  
-Interactive OpenAPI Docs: **http://localhost:8000/docs**
+- **Frontend Dashboard**: [http://localhost:3000](http://localhost:3000) (Defaults to the **Copilot Playground** dual-pane Chat + State Inspector view)
+- **Backend API & Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- Press `Ctrl+C` in the terminal to cleanly terminate both processes.
 
 ---
 
-### Frontend Setup
+## 3. Verified Benchmark Results
 
-```bash
-# 1. Navigate to frontend
-cd frontend
+The benchmark was executed using the official `evaluator.local_evaluator` on the 200 public test cases. The exact recorded metrics from [`results.json`](results.json) are:
 
-# 2. Install dependencies
-npm install
+### Overall Benchmark Metrics
 
-# 3. Start the Vite dev server
-npm run dev
-```
+| Metric | Target / Starter Baseline | Our Verified Result | Status |
+| :--- | :---: | :---: | :---: |
+| **Hit Rate@10** | `0.5000` | **`0.9400` (94.0%)** | 🟢 **+44.0% over target** |
+| **MRR (Mean Reciprocal Rank)** | `0.3000` | **`0.6407`** | 🟢 **+0.3407 over target** |
+| **MTTC (Mean Turns to Conversion)** | `5.0000` | **`2.8950` turns** | 🟢 **-2.105 turns faster** |
+| **Efficiency Score** | — | **`0.8105`** | 🟢 **High convergence** |
+| **Recommended Technical Score** | — | **`0.8243`** | 🟢 **Top-tier performance** |
+| **Total Reported Token Usage** | — | **`41,829` tokens** | 🟢 **~209 tokens / session** |
 
-The UI will be available at **http://localhost:3000**
+### Scenario Breakdown
 
----
-
-## 🏗️ Pipeline Architecture Overview
-
-```
-User Message
-    │
-    ▼
-Intent Router (classify_intent) ──► BUYING / BROWSING Track
-    │
-    ▼
-State Machine (Ollama llama3.1:8b)
-  → Extract: hardFilters, negativeFilters, softPreferences
-  → Apply Intent Overrides & Erasure
-    │
-    ▼
-Retriever (RRF)
-  ├─ BM25 (rank-bm25 with 3x title boosting)
-  └─ Dense (all-MiniLM-L6-v2 + FAISS)
-    │
-    ▼
-Entropy Check (Shannon Categorical Entropy)
-  ├─ Pool > 100 & H > 1.5 → Proactive Clarification Question
-  └─ Pool ≤ 30 or Turn ≥ 3 → Cross-Encoder Reranker (ms-marco-MiniLM-L-6-v2)
-                                      │
-                                      ▼
-                              Top-10 Recommendations
-```
+| Scenario Type | Sample Count | Hit Rate@10 | MRR | MTTC |
+| :--- | :---: | :---: | :---: | :---: |
+| **Boundary** | 10 | **`1.0000` (100.0%)** | **`0.8310`** | **`3.3000` turns** |
+| **Browsing** | 80 | **`0.9625` (96.25%)** | **`0.6095`** | **`2.6125` turns** |
+| **Buying** | 80 | **`0.9250` (92.50%)** | **`0.6227`** | **`2.5250` turns** |
+| **Intent Override** | 30 | **`0.9000` (90.00%)** | **`0.7082`** | **`4.5000` turns** |
 
 ---
 
-## 🌐 API Reference
+## 4. Engineering Tradeoffs & Limitations
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/sessions` | Create a new shopping session |
-| `POST` | `/api/sessions/{id}/turn` | Process a conversational turn |
-| `GET`  | `/api/sessions/{id}/state` | Inspect current slot state |
-| `POST` | `/api/products/load` | Load products into search index |
-| `GET`  | `/health` | Health check |
+### Current Tradeoffs
+1. **Lexical Dependence of BM25**:
+   - SQLite FTS5 relies on exact token matching, stemming, and token proximity. While tuned column weighting resolves structural and categorical mismatches, it lacks semantic embedding alignment for non-overlapping synonyms (e.g., query *"summer apparel"* vs. catalog item *"warm weather linen shirt"*).
+2. **Deterministic Probing Heuristic**:
+   - While `ask_attribute = "other"` maximally accelerates constraint acquisition on the benchmark simulator, real human shoppers occasionally benefit from category-specific multiple-choice prompts (e.g., offering specific style tags).
+
+### Proposed Future Work: Two-Stage Semantic Hybrid
+Given additional engineering time, we propose extending the engine with a **Two-Stage Semantic Hybrid Retrieval Pipeline**:
+1. **Stage 1 (High-Recall Candidate Retrieval)**:
+   - Use in-memory SQLite FTS5 to retrieve the Top-50 candidates in `< 2ms` with zero embedding overhead.
+2. **Stage 2 (Quantized Cross-Encoder Reranking)**:
+   - Execute a quantized, local cross-encoder (e.g., `ms-marco-MiniLM-L-6-v2` ONNX runtime) over the Top-50 candidates.
+   - Computes query-document cross-attention only on the pre-filtered pool, adding semantic synonym matching while preserving sub-15ms response times.
 
 ---
 
-## 📂 Project Structure
+## 5. Tech Stack & Team
 
-```
-backend/
-├── app/
-│   ├── api/routes.py          # FastAPI endpoints
-│   ├── core/
-│   │   ├── state_machine.py   # Slot tracking & LLM override logic
-│   │   ├── router.py          # Buying vs Browsing intent routing
-│   │   ├── retriever.py       # In-memory BM25 + Dense RRF
-│   │   ├── entropy.py         # Variance calculation & cutoff logic
-│   │   ├── reranker.py        # Cross-Encoder Top-30 reranking
-│   │   └── rag_pipeline.py    # Pipeline interface module
-│   ├── db/prisma.py           # Prisma client lifecycle
-│   └── main.py                # FastAPI entrypoint
-├── schema.prisma              # Prisma schema definition
-├── requirements.txt
-└── run.py
-docs/
-├── rag_pipeline.md            # Detailed RAG Architecture Documentation
-├── baseline_results.json      # Weak starter baseline metric outputs
-└── evaluation_config.json     # Evaluator parameters
-starter/
-└── agent.py                   # Unified RAG execution agent
-evaluator/
-└── local_evaluator.py         # Official benchmark evaluation script
-frontend/
-├── src/
-│   ├── components/
-│   │   ├── ChatPlayground.jsx # Conversational UI
-│   │   ├── StateInspector.jsx # Real-time slot debugger
-│   │   └── ProductGrid.jsx    # Ranked product cards
-│   ├── App.jsx                # 3-panel layout
-│   └── index.jsx
-└── vite.config.js
-```
+### Technology Stack
+
+| Layer | Component | Description |
+| :--- | :--- | :--- |
+| **Runtime & Language** | Python 3.12, Node.js 18+ | Core agent runtime and frontend environment |
+| **Dependency Management** | `uv`, `npm` | Deterministic, ultra-fast virtualenv and package sync |
+| **Backend API** | FastAPI, Uvicorn | High-throughput asynchronous REST API |
+| **Search Engine** | SQLite FTS5 (In-Memory) | Weighted multi-field BM25 candidate retrieval |
+| **ORM & Persistence** | Prisma Client Python, SQLite | Session, state snapshot, and user profile persistence |
+| **LLM & Agent Framework** | LangChain, LangChain-OpenAI / Ollama | Optional slot extraction & fallback reasoning |
+| **Frontend Framework** | React 18, Vite | Dual-pane Copilot Playground & Developer Inspector |
+| **UI Design System** | Tailwind CSS, Lucide React | Glassmorphic dark/light UI and state visualization |
+
+### Team Members
+- **[Team Member 1]** — [Role / GitHub Profile]
+- **[Team Member 2]** — [Role / GitHub Profile]
+- **[Team Member 3]** — [Role / GitHub Profile]
+- **[Team Member 4]** — [Role / GitHub Profile]
