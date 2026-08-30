@@ -1,4 +1,4 @@
-# 🛒 Shopping Copilot — High-Performance Conversational Commerce
+# 🛒 Sivle Copilot — High-Performance Conversational Commerce
 
 An active **State-Machine RAG Agent** for conversational e-commerce product discovery, slot tracking, and multi-turn recommendation built for the **CodeJam / TechJam 2026 Hackathon**.
 
@@ -240,7 +240,5 @@ Given additional engineering time, we propose extending the engine with a **Two-
 | **UI Design System** | Tailwind CSS, Lucide React | Glassmorphic dark/light UI and state visualization |
 
 ### Team Members
-- **[Team Member 1]** — [Role / GitHub Profile]
-- **[Team Member 2]** — [Role / GitHub Profile]
-- **[Team Member 3]** — [Role / GitHub Profile]
-- **[Team Member 4]** — [Role / GitHub Profile]
+- Aamuel Chua
+- Elvis Ong
