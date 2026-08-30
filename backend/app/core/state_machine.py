@@ -40,9 +40,9 @@ elif _BACKEND_ENV.exists():
 else:
     load_dotenv(override=False)
 
-_API_KEY: str = os.environ.get("API_KEY", "")
-_MODEL: str = os.environ.get("MODEL", "llama3.1:8b").strip('"').strip("'")
-_BASE_URL: str = os.environ.get("BASE_URL", "https://api.openai.com/v1").rstrip("/")
+_API_KEY: str = os.environ.get("ARK_API_KEY") or os.environ.get("API_KEY", "")
+_MODEL: str = (os.environ.get("ARK_MODEL") or os.environ.get("MODEL", "llama3.1:8b")).strip('"').strip("'")
+_BASE_URL: str = (os.environ.get("ARK_BASE_URL") or os.environ.get("BASE_URL", "https://api.openai.com/v1")).rstrip("/")
 
 _SYSTEM_INSTRUCTION = """\
 You are a shopping assistant slot extractor. Given the conversation history and the latest user message, \

@@ -159,14 +159,57 @@ MODEL="llama3.1:8b"
 ### Execution Commands
 
 #### 1. Headless Benchmark Evaluation (`./run_eval.sh`)
-Runs the official benchmark against all 200 public test sessions using `uv` and the backend environment:
+
+> **Default Evaluation**: `./run_eval.sh` **does not require an input file**. When executed without arguments, it **automatically defaults to `data/public_set.jsonl`** as the test dataset and `data/catalog.jsonl` as the product catalog.
+
+##### A. Running Without Specifying an Input File (Default)
+To evaluate against the official 200 public test benchmark (`data/public_set.jsonl`), simply run:
 ```bash
-chmod +x run_eval.sh
-./run_eval.sh --catalog data/catalog.jsonl --dataset data/public_set.jsonl
+./run_eval.sh
 ```
-- Automatically syncs backend virtualenv dependencies via `uv`.
-- Evaluates from the project root to guarantee standard module resolution (`evaluator.*`, `starter.*`).
-- Prints summary statistics to stdout and writes full per-session traces to `results.json`.
+- **No arguments or input files needed**: Defaults automatically to `data/public_set.jsonl` and `data/catalog.jsonl`.
+- Automatically syncs backend virtualenv dependencies using `uv`.
+- Outputs summary metrics directly to stdout and saves detailed session evaluation logs to `results.json`.
+
+##### B. Running With a Specific Test File (Optional)
+To evaluate on any of the randomized 200-sample test sets in `test-data/`, pass the `--dataset` argument:
+```bash
+# 1. Standard test set 1 (Seed 101)
+./run_eval.sh --dataset test-data/test_set_1_standard.jsonl
+
+# 2. Standard test set 2 (Seed 202)
+./run_eval.sh --dataset test-data/test_set_2_standard.jsonl
+
+# 3. Buying-heavy mixture (65% buying intent)
+./run_eval.sh --dataset test-data/test_set_3_buying_heavy.jsonl
+
+# 4. Browsing-heavy mixture (65% browsing exploration)
+./run_eval.sh --dataset test-data/test_set_4_browsing_heavy.jsonl
+
+# 5. Intent-override heavy mixture (45% slot overrides)
+./run_eval.sh --dataset test-data/test_set_5_override_heavy.jsonl
+```
+
+##### C. Specifying Custom Catalog or Output Paths
+```bash
+./run_eval.sh --dataset test-data/test_set_1_standard.jsonl --output results_set1.json
+```
+
+##### D. Generating Additional Randomized Test Sets
+You can generate fresh randomized 200-sample test sets with custom random seeds or scenario mixtures anytime:
+```bash
+python3 test-data/generate_test_data.py \
+  --catalog data/catalog.jsonl \
+  --output test-data/my_custom_test.jsonl \
+  --size 200 \
+  --seed 999 \
+  --mixture standard
+
+# Evaluate on your newly generated dataset
+./run_eval.sh --dataset test-data/my_custom_test.jsonl
+```
+
+---
 
 #### 2. Interactive Full-Stack Demo (`./start.sh`)
 Launches the FastAPI backend and Vite React frontend concurrently with integrated signal trapping:
@@ -184,25 +227,38 @@ chmod +x start.sh
 
 The benchmark was executed using the official `evaluator.local_evaluator` on the 200 public test cases. The exact recorded metrics from [`results.json`](results.json) are:
 
-### Overall Benchmark Metrics
+### Overall Benchmark Metrics (Official Public Set)
 
 | Metric | Target / Starter Baseline | Our Verified Result | Status |
 | :--- | :---: | :---: | :---: |
-| **Hit Rate@10** | `0.5000` | **`0.9400` (94.0%)** | 🟢 **+44.0% over target** |
-| **MRR (Mean Reciprocal Rank)** | `0.3000` | **`0.6407`** | 🟢 **+0.3407 over target** |
-| **MTTC (Mean Turns to Conversion)** | `5.0000` | **`2.8950` turns** | 🟢 **-2.105 turns faster** |
-| **Efficiency Score** | — | **`0.8105`** | 🟢 **High convergence** |
-| **Recommended Technical Score** | — | **`0.8243`** | 🟢 **Top-tier performance** |
-| **Total Reported Token Usage** | — | **`41,829` tokens** | 🟢 **~209 tokens / session** |
+| **Hit Rate@10** | `0.5000` | **`0.9800` (98.0%)** | 🟢 **+48.0% over target** |
+| **MRR (Mean Reciprocal Rank)** | `0.3000` | **`0.7285`** | 🟢 **+0.4285 over target** |
+| **MTTC (Mean Turns to Conversion)** | `5.0000` | **`2.2900` turns** | 🟢 **-2.710 turns faster** |
+| **Efficiency Score** | — | **`0.8710`** | 🟢 **Rapid convergence** |
+| **Recommended Technical Score** | — | **`0.8828`** | 🟢 **Top-tier performance** |
+| **Total Reported Token Usage** | — | **`31,825` tokens** | 🟢 **~159 tokens / session** |
 
-### Scenario Breakdown
+### Scenario Breakdown (Official Public Set)
 
 | Scenario Type | Sample Count | Hit Rate@10 | MRR | MTTC |
 | :--- | :---: | :---: | :---: | :---: |
-| **Boundary** | 10 | **`1.0000` (100.0%)** | **`0.8310`** | **`3.3000` turns** |
-| **Browsing** | 80 | **`0.9625` (96.25%)** | **`0.6095`** | **`2.6125` turns** |
-| **Buying** | 80 | **`0.9250` (92.50%)** | **`0.6227`** | **`2.5250` turns** |
-| **Intent Override** | 30 | **`0.9000` (90.00%)** | **`0.7082`** | **`4.5000` turns** |
+| **Boundary** | 10 | **`1.0000` (100.0%)** | **`0.9500`** | **`2.6000` turns** |
+| **Browsing** | 80 | **`1.0000` (100.0%)** | **`0.6750`** | **`1.9625` turns** |
+| **Buying** | 80 | **`0.9625` (96.25%)** | **`0.7085`** | **`1.9625` turns** |
+| **Intent Override** | 30 | **`0.9667` (96.67%)** | **`0.8509`** | **`3.9333` turns** |
+
+### Multi-Dataset Generalization Results
+
+To prove that the RAG pipeline is robust and not overfitted to any single dataset, the agent was benchmarked across 1,200 sessions across 6 diverse datasets and mixtures:
+
+| Dataset | Mixture / Scenario Distribution | Hit Rate @ 10 | MRR | MTTC | Technical Score |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| **Public Set (Official)** | Baseline (200 samples) | **0.9800** | **0.7285** | **2.290** | **0.8828** |
+| **Set 1: Standard** | Standard (Seed 101) | **0.9650** | **0.7053** | **2.505** | **0.8640** |
+| **Set 2: Standard** | Standard (Seed 202) | **0.9450** | **0.6960** | **2.705** | **0.8472** |
+| **Set 3: Buying-Heavy** | 65% Buying (Seed 303) | **0.9300** | **0.6382** | **2.695** | **0.8226** |
+| **Set 4: Browsing-Heavy** | 65% Browsing (Seed 404) | **0.9500** | **0.6890** | **2.755** | **0.8466** |
+| **Set 5: Override-Heavy** | 45% Override (Seed 505) | **0.9800** | **0.7609** | **2.895** | **0.8804** |
 
 ---
 
