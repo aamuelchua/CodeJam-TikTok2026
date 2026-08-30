@@ -61,4 +61,5 @@ deploy/volcengine/*.tfstate*
 deploy/volcengine/terraform.tfvars
 
 # ── Docs (auto-generated / internal) ───────────────────────
-docs/
+# docs/
+docs/spec.md
